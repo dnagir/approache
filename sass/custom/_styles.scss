@@ -1,8 +1,16 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
 
-// Make the header smaller
 body > header {
+  // Smaller header
   padding: 0 1.5em 0 1.5em;
   font-size: 1em;
+
+  // Rounded
+  border-radius: 1em 1em 0 0;
+}
+
+body > footer {
+  // Rounded
+  border-radius: 0 0 1em 1em;
 }
