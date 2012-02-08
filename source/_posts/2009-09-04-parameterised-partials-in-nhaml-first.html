@@ -1,0 +1,72 @@
+---
+layout: post
+title: "Parameterised partials in NHAML – first thought"
+date: 2009-09-04T14:02:00+10:00
+categories:
+ - nhaml
+ - Development
+ - asp.net mvc
+---
+
+<div class='post'>
+Thinking about parameterised <a href="http://code.google.com/p/nhaml/issues/detail?id=56" target="_blank">partial views in NHAML</a>.<br />
+<h4>
+User perspective (view)</h4>
+How I want to use the partials:<br />
+_ TextBox(“FirstName”, “Given Name”)    <br />_ TextBox(“FirstName”)     <br />_ TextBox<br />
+<br />
+<h4>
+User perspective (partial)</h4>
+Define the _TextBox partial:<br />
+! (string key, string title=”Provide value:”)    <br />&nbsp; = Html.LabelFor(key).Title(title + variableFromView)     <br />&nbsp; = Html.TextBox(key)<br />
+the <b>first line defines set of parameters</b> for the partials. They can be used <b>as regular variables </b>on the partial view and do not intersect in any way with variables on the view. These are <b>local variables only</b>. So we can have integer key variable on the view with value 12345 and string key variable on the partial view with value “partial”. Of course the “partial” value should be the value used in the partial view. Additionally if there are no parameters passed <b>defaults are used</b>.<br />
+<br />
+<h4>
+Requirements</h4>
+<ol>
+<li>View overrides variables used in outer scope. </li>
+<li>View can access outer-scope variables [POTENTIALLY SHOULD AVOID]. </li>
+<li>Parameter values have default value if not specified in the actual list of parameters. </li>
+<li>Parameter can define a default value which will be used if no value has been provided. </li>
+</ol>
+<h4>
+Implementation thoughts</h4>
+To satisfy requirements #1, it seems the partial view should be isolated from the rest of the view processing to be able to handle local variables (In C# it is impossible to have variable with the same name in one method). This behaviour is totally different from the way NHAML works now. Currently any view, partial, partial of partial (of partial…) are executed in one, single scope; generally, sharing all the variables.<br />
+To satisfy the requirement #2 we must execute all the partial code in the same scope as the partial view itself. But this won’t satisfy requirement #1.<br />
+So at the moment, C# does not allow to implement this at the moment. And as a workaround for this we could discard requirement #2.<br />
+The requirements 3 and 4 should not be hard to do.<br />
+Possible implementation in meta-code for the <b>NHAML generated code</b> could look like:<br />
+<pre class="csharpcode"><span class="rem">// NHAML: _ TextBox("FirstName"), isolating the scope</span>
+<span class="kwrd">new</span> NhamlGeneratedPartialTextBox(<span class="kwrd">this</span>).Render(<span class="str">"FirstName"</span>, <span class="str">"Provide value:"</span>);
+<span class="rem">// NHAML: _ TextBox</span>
+<span class="kwrd">new</span> NhamlGeneratedPartialTextBox(<span class="kwrd">this</span>).Render(<span class="kwrd">default</span>(<span class="kwrd">string</span>), <span class="str">"Provide value:"</span>);</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+So I would say we can pay the price of not being able to access global variables from partial for the sake of partial parameters.<br />
+Also I should mention that the way NHAML works now (joining all the partials into one scope) does not feel good/safe for me. I hit couple of issues with it previously that make my partials strongly bound to the view where they are used. So the <b>partials should be isolated</b>.</div>

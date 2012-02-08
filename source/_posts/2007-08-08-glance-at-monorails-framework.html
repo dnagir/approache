@@ -1,0 +1,69 @@
+---
+layout: post
+title: "A glance at MonoRail Framework"
+date: 2007-08-08T10:05:00+10:00
+categories:
+ - webforms
+ - Development
+ - castle-monorail
+ - asp.net
+---
+
+<div class='post'>
+I very often read/post at Borland <a href="http://groups.google.com/group/borland.public.delphi.modeldrivenarchitecture.eco/topics">ECO newsgroup</a> and last week I saw a <a href="http://groups.google.com/group/borland.public.delphi.modeldrivenarchitecture.eco/browse_thread/thread/524870ebac8fd1be/8c62abcf2459a746">post</a> from <a href="http://mrpmorris.blogspot.com/">Peter Morris</a> about ECO "extension" for <a href="http://www.castleproject.org/monorail/index.html">MonoRail</a>.
+
+Honestly saying I was surprised and thought "<span style="font-style: italic;">what's new this guy had invented</span>". And didn't pay attention at the MonoRail that day. I always know Peter is very innovative and "Object Oriented" guy. And I like his ideas a lot... My knowledge leak about MonoRail was not leaving me. I felt I have to take a look at that at least.
+
+As always, feeling uncomfortable of unknowing something, like MonoRail,  I decided to find what a Framework it is.
+After some research I found <a href="http://www.ayende.com/97/section.aspx/download/197" style="color: #000099; font-weight: bold;">demo</a><span style="font-weight: bold;"> (HIGHLY RECOMMENDED)</span> that opened my mind.
+I was really impressed of that Framework.
+
+This Framework provides strong separation of Presentation (View) and Business Logic (Controller) in ASP.NET applications.
+Some articles about it:
+<br />
+<ul>
+<li><a href="http://haacked.com/archive/2006/08/09/ASP.NETSupervisingControllerModelViewPresenterFromSchematicToUnitTestsToCode.aspx">ASP.NET Supervising Controller (Model View Presenter) From Schematic To Unit Tests to Code</a>.</li>
+<li><a href="http://www.ayende.com/Blog/archive/2006/10/26/7147.aspx">MonoRail vs ASP.NET</a>.</li>
+<li><a href="http://wiki.castleproject.org/index.php/MonoRail:MonoRail_vs._Webforms">MonoRail/WebForms - pros/cons</a>.
+</li>
+</ul>
+Ok. This Framework allows better maintainability, testability etc. All that looks very nice. But what is a reality?
+
+It <a href="http://wiki.castleproject.org/index.php/MonoRail:MonoRail_vs._Webforms#Cons_2">seems</a> this Framework is not very mature for now and developers could sometimes spend much more time developing MonoRail application than WebForm one because of there's no design-time support. Also millions of controls for WebForms available are probably much harder (if not impossible) to use with MonoRail.
+And all the things available in Page object are <span style="font-style: italic;">probably</span> going to be lost (I mean native support). This is Validation, ViewState, PostBacks support etc. I could be wrong here because of I don't know MonoRail well and it is my first look at it.
+
+MonoRail has its own View Engine with its own syntax, so developers should be armed with one more language. The Engine can produce light HTML page but requires more work around (X)HTML, JavaScript, CSS etc. WebForm does lots of things for developers (often - not very good).
+
+I'm also not sure about MonoRail performance. It has no good caching support for now.
+
+At the end - any comments are very welcome! I could be totally wrong in some sentences. But this is just my first impression.
+
+Happy Coding!</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Fábio</div>
+<div class='content'>
+The first thing I loved about MonoRail is the removal of every single trace of WebForms, while keeping ASP.NET and the .NET framework intact.<BR/><BR/>Like Peter Morris, I am that kind of developer that dislikes the ViewState hacking and prefer to use &lt;asp:Repeater&gt; than any other WebForm control. I used to spend 60% of my development time hacking through WebForms components to achieve the final HTML I wanted. Now, with MR, I have total control of my HTML. If your development process have separate roles for the programmer and the html/css writer, it's a big time saver.<BR/><BR/>But the part that really seduced me was the automatic conversion from submitted values to their actual data types: I never wrote another Convert.ToDecimal() just to convert a textbox value to pass to my business object.<BR/><BR/>About validators and things like that: I prefer to inject non-intrusive javascript, auto-generated from model classes or from custom business rules. Take a look on how beautiful it can look like, with NJS: http://hammett.castleproject.org/?p=97<BR/><BR/>MonoRail have lots of room for improvement, but I don't see design time support as a must-have. I've been developing web apps since 1999, and I never used any of those tools.<BR/><BR/>As a final word, I think that professional web developers MUST have complete knowledge about the HTTP protocol, (X)HTML, XML, JS and CSS. You can use tools that hide some of that complexity from you, but then I won't be able to call you a pro. Who would you hire to build you an skyscraper: a company that hires engineers with degrees, with full knowledge of the physics and math involved, working with a CAD tool; or a self-leaner guy that uses "Instant Home Design 3", that "can create you that skyscraper by draging and dropping"?</div>
+</div>
+<div class='comment'>
+<div class='author'>Ayende Rahien</div>
+<div class='content'>
+Regarding reflection in MR.<BR/>MR uses cached reflection, and a lot of smarts has been invested in making it very efficient.<BR/>It can be made even more efficient, at the cost of additional complexity, which so far we have no need.<BR/>There has been 0 real world cases where that has been the perf issue.</div>
+</div>
+<div class='comment'>
+<div class='author'>Peter Morris</div>
+<div class='content'>
+Losing validation:  If your app dictates that an object is / is not valid depending on what you are doing (eg, OrderNumber is not required until you Confirm an order) then you can do this with ECO and state machines.  However, let's ignore that for a minute.  If you wanted different validation depending on what the user is doing then you can easily do this with 1 line of code per validation within your controller.  The only difference is that it is 1 line of code except 1 component on your form.  Personally I prefer a line of code to dropping validation components on my form.<BR/><BR/>ViewState: It would be very easy to have a STRUCT with the state information for your page and then serialise it into a hidden field on the form.  You could then deserialise it when then the form is posted back, stick the struct into PropertyBag["ViewState"] and then use the ViewState properties in your view, e.g.<BR/><BR/>Enabled = $ViewState.FirstNameEnabled<BR/><BR/>Having state in a page is fine, but I really don't like the ASP.NET view state, in fact I have disliked it from the very first time I saw it :-)<BR/><BR/>WebForms: If you use WebForms as your view engine please let me know how you get on with it.  I personally don't like being restricted to 1 form per page.<BR/><BR/>View engine: There may be lots of tricks, but so far I have only needed #if and #foreach :-)<BR/><BR/>More work: I disagree :-)  So far I have found that I have done no more CSS than I normally do in an ASPX.  As for more HTML I don't find that to be the case either, I usually use repeaters rather than datagrids because I want more control of the HTML generated.<BR/><BR/>Caching:  Haven't looked at it yet, but there are references to System.Web.Caching in the source code, CachePolicy, and properties named things like EnableCache.  So I expect there is a way.<BR/><BR/>Reflection:  It is true that it uses reflection.  I think though that it could easily be made more efficient.  It would require modifying the source, but that's what it is there for :-)<BR/><BR/>You could have the routine that searches for the best method additionally look for static methods with the first parameter "NameOfControllerClass instance".  It could then easily convert these methods to delegates and store them in a Dictionary.  Subsequent calls would look for the dictionary entry first, your code would look something like this<BR/><BR/>public static void ShowAdvert(AdvertController instance, int id)<BR/>{<BR/>  instance.DoShowAdvert(id);<BR/>}<BR/><BR/>In my previous experience I have found a delegate is no slower than calling a method directly.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Hi Pete,<BR/><BR/>Thanks for your comments!<BR/>I want to comment your comments :)<BR/><BR/><BR/>No design-time support: could be not so critical, but it often speeds up preparing initial page.<BR/><BR/><BR/>Losing validation: ECO model validation is not very flexible. It hasn't validation. It has Constraints that should be used to ensure objects are in correct state. Constraints are not intended for user input validation (nevertheless, it can be adopted to do it). Also there are lots of situations when validation is not performed against model.<BR/>Other side of model validation - it is always performed on the server and do not provide client-side validation that can in many cases unload server.<BR/><BR/>Losing viewstate: Yeahh, I know why you're happy here :)<BR/>But if ViewState is no required for  WebForms pages it is easy to turn it off. But having ViewState allows  achieving lots of things on complex pages that perform postbacks.<BR/><BR/>Millions of controls for webforms: They can be used on ASPX pages. But most of pages (more or less complicated) often use 3rd-party controls which means most pages should be ASPX pages and not MonoRail ones :)<BR/><BR/>View engine/new language: It can be similar to C#, but it is not C#. There probably are lots of tricks.<BR/><BR/>More work (X)Html, Javascript, CSS: I'm saying more WORK, not that you should not know all the stuff. Lots of controls generate rich HTML, CSS, JS. In MonoRail you will have to invent a wheel in some cases.<BR/><BR/>Performance/caching: caching - it is one of the main advantages in ASP.NET. Not using it in a real-world applications can decrease performance greatly.<BR/>About MonoRail performance. I had a look at some code and it uses Reflection very often. This is the thing that should be avoided as much as possible in web applications. It greatly decreases performance.<BR/>Also I *think* that processing of View on every request is also a dynamic and very costly procedure and is not performed very fast.</div>
+</div>
+<div class='comment'>
+<div class='author'>Peter Morris</div>
+<div class='content'>
+Hi Dmitriy<BR/><BR/>Here are some things that come to mind after reading your post:<BR/><BR/>No design-time support:  I haven't done this myself on account that I like writing the HTML by hand, but I have read on the castleproject.org website somewhere that it is actually possible to use the VS WYSIWYG editor.  You can run your app and then alter the VM file (the view) and just click Refresh in the browser though, so no need to re-run the app just to make visual changes.<BR/><BR/>Losing validation: In my opinion this belongs in the model and the controller, not the page.  If you look at the demo I sent to you I have all the validation I need and it is all defined as OCL constraints in my model.  I think this is a much better approach, and I certainly prefer it to the ASPX approach of having only a single form per page and then having to define validation groups when your page needs to do two different things (e.g., A: Login or B:Forgotten password).<BR/><BR/>Losing viewstate: Hooray! :-)  <BR/><BR/>Losing postback: Not sure what you mean here.  The form will go to any URL you tell it to.  You can post it back to the same page if you want to.<BR/><BR/>Millions of controls for webforms:  Apparently it is possible to use ASPX files as your view, which means that not only do you get to use any control you like but you also get to use the visual designer.  However, I have not used this myself because I like 100% control over the output HTML.<BR/><BR/>View engine / new language:  The NVelocity stuff looks very similar to C#, in fact so far I have only used #if and #foreach.<BR/><BR/>More work (X)Html, Javascript, CSS:  If you want to develop nice looking sites you should really be familiar with these anyway.  I have a book on XHTML and CSS, unfortunately I just don't have "the eye" for design :-)<BR/><BR/>Performance / caching:  I don't know anything about the caching, but so far I have had no concerns with how quickly pages are rendered, and in my demo site I am not even pooling EcoSpaces.</div>
+</div>
+</div>

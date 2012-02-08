@@ -1,0 +1,69 @@
+---
+layout: post
+title: "Fixing HTTPS Support in ASP.NET MVC Routing"
+date: 2008-08-14T19:46:00+10:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>I picked the great Steve's <a href="http://blog.codeville.net/2008/08/05/adding-httpsssl-support-to-aspnet-mvc-routing/">idea</a> to add support for HTTPS in the routing. But I found couple of bugs.</p>  <p>First thing I've noticed after adding it and using ActionLink - was invalid HTTPS URL :). It looked like <font face="Courier New"><strong><font color="#ff0000">/App/</font>https:/localhost<font color="#ff0000">/App</font>Account/LogIn.aspx</strong></font>.</p>  <p>This is totally unexpected. So I asked debugger for some help and first thing I'd noticed is that <font face="Courier New">EnableAbsoluteRouting.MakeAbsoluteUrl</font> - doesn't track ApplicationPath slash which causes invalid link for site in root or in virtual directory. Fixed it the usual for ASP.NET way (with GetCorrectedAppPath).</p>  <p>&#160;</p>  <p>It fixed the second <font color="#ff0000">RED</font> problem. What about the leading virtual path appended to the link?</p>  <p>The problem is in the HttpsAwareHttpResponseWrapper.ApplyAppPathModifier and it is again related to the slash-thing. It receives appPath from MVC internals which is again slash-broken :). Then trying to apply RegEx to fails. There's one more problem with RegEx: the pattern is not escaped, but that another story. So instead of using string.Substring I decided to use normal RegEx in rely on it.</p>  <p>So the final fix for me at this moment is:</p>  <p><strong>HttpsAwareHttpResponseWrapper:</strong></p>  <div>   <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none"><span style="color: #0000ff">public</span> <span style="color: #0000ff">override</span> <span style="color: #0000ff">string</span> ApplyAppPathModifier(<span style="color: #0000ff">string</span> virtualPath) {
+    <span style="color: #0000ff">return</span> Regex.Replace(virtualPath, <span style="color: #006080">&quot;(.*)http(s?):(.*)&quot;</span>, <span style="color: #006080">&quot;http$2:$3&quot;</span>, RegexOptions.IgnoreCase);<span style="color: #008000">// Just remove everything before &quot;httpS:&quot;</span>
+}</pre>
+</div>
+
+<p>&#160;</p>
+
+<p><strong>EnableAbsoluteRouting</strong></p>
+
+<div>
+  <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none"><span style="color: #0000ff">private</span> <span style="color: #0000ff">string</span> MakeAbsoluteUrl(RequestContext requestContext, <span style="color: #0000ff">string</span> virtualPath, <span style="color: #0000ff">string</span> scheme) {
+    <span style="color: #0000ff">return</span> <span style="color: #0000ff">string</span>.Format(<span style="color: #006080">&quot;{0}://{1}{2}{3}/{4}&quot;</span>,
+        scheme,
+        requestContext.HttpContext.Request.Url.Host,
+        GetPortSegmentOfUrl(scheme),
+        GetCorrectedAppPath(requestContext.HttpContext.Request.ApplicationPath),
+        virtualPath);
+}
+<span style="color: #0000ff">private</span> <span style="color: #0000ff">string</span> GetCorrectedAppPath(<span style="color: #0000ff">string</span> appPath) {
+    <span style="color: #0000ff">if</span> (appPath.Length &gt; 0 &amp;&amp; appPath[0] != <span style="color: #006080">'/'</span>)
+        <span style="color: #0000ff">return</span> appPath = <span style="color: #006080">'/'</span> + appPath; <span style="color: #008000">// Make sure there's slash</span>
+    <span style="color: #0000ff">return</span> appPath;
+}</pre>
+</div>
+
+<p>&#160;</p>
+
+<p>Hope it will help.</p>
+
+<p>I'm sure I'll find more bugs, but let's leave it for tomorrow :)</p>
+
+<p>And many thanks to <a href="http://blog.codeville.ne">Steve Sanderson</a> for the great idea.</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+First of all please make sure you'll check it works correctly. I wrote it late night and as Steve pointed it probably has some issues.<BR/><BR/>You need to rewrite the HttpsAwareHttpResponseWrapper.ApplyAppPathModifier<BR/>and<BR/>EnableAbsoluteRouting.GetCorrectedAppPath methods.<BR/>They are located in Steve's download.</div>
+</div>
+<div class='comment'>
+<div class='author'>Yenkay</div>
+<div class='content'>
+Hi Dmitriy Nagirnyak, <BR/><BR/>Where to include these functions ?<BR/><BR/>nk</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Hi Steve,<BR/><BR/>It was late time when I was digging into that code and I probably could do a mistake.<BR/>But couple of hours ago the site was working with this code.<BR/>(It can't be a mystery...) Especially with *leading* slash.<BR/>I don't even remember what for I've done it.</div>
+</div>
+<div class='comment'>
+<div class='author'>Steve Sanderson</div>
+<div class='content'>
+Hey, thanks for letting me know about that. When I looked into it, it seemed that the problems in both cases were that ApplicationPath might not have a trailing slash (and I was assuming it would).<BR/><BR/>So, why is your GetCorrectedAppPath() method putting a *leading* slash on ApplicationPath? When I run the code, it always has a leading slash - the problem is that it might not have a trailing slash.<BR/><BR/>Or does it behave differently for you?</div>
+</div>
+<div class='comment'>
+<div class='author'>Halim</div>
+<div class='content'>
+This comment has been removed by a blog administrator.</div>
+</div>
+</div>

@@ -1,0 +1,45 @@
+---
+layout: post
+title: "There is Such a Thing as Too Much Testing"
+date: 2010-02-18T09:13:00+11:00
+categories:
+ - Development
+ - testing
+---
+
+<div class='post'>
+Have been watching the RubyConf 2009 <a href="http://rubyconf2009.confreaks.com/21-nov-2009-13-15-there-is-such-a-thing-as-too-much-testing-jake-scruggs.html" target="_blank">video</a>. And I liked the matrix which is based on 3 dimensions to determine level of testing. The questions you have to ask to determine how much testing you need should include:<br />
+<ul>
+<li>Did your tests stop/find bugs?      <br />
+<br />
+<ul>
+<li>How often? </li>
+<li>How soon? </li>
+</ul>
+</li>
+<li>Was there good design?      <br />
+<br />
+<ul>
+<li>Did the tests encourage good design? </li>
+<li>How easy was it to write new features? </li>
+</ul>
+</li>
+<li>What's the level of developer buy-in for testing? </li>
+<li>What's the level of buy-in for managers? </li>
+<li>What level of assurance do you need? Are you really sure? (Lose a tweet – not a big deal, lose a life – thing you're dead too). </li>
+</ul>
+The lessons are:<br />
+<ul>
+<li>Start small (do not do Selenium at least!). </li>
+<li>Do not get new resources just to run your tests. They MUST be fast enough.      <br />
+<br />
+<ul>
+<li>Paralllelise. </li>
+<li>Use fast machine or cloud. </li>
+<li>Do not hit external resources (including DB if possible). </li>
+<li>Profile and examine slow tests. </li>
+<li>remove redundant tests. </li>
+</ul>
+</li>
+<li>Distinguish between model and integration test clearly. You often assert in model test instead of integration ones. </li>
+</ul></div>

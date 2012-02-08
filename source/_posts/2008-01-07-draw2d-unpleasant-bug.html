@@ -1,0 +1,10 @@
+---
+layout: post
+title: "draw2d - unpleasant bug"
+date: 2008-01-07T16:57:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>I am using the <a href="draw2d " target="_blank">draw2d</a> library and implemented quite a lot of stuff already. I used one of samples to get started and was testing and playing with my implementation on a separate HTML page.</p>  <p><img style="margin: 0px 5px 0px 0px" height="162" src="http://crazygirlclub.files.wordpress.com/2006/10/angry-face.gif" width="162" align="left" /> It was time to integrate client-side part with the server. I haven't expected any problems.     <br />So I just put all the stuff on a real page, implemented some C# code.</p>  <p>But after I started to play with my diagram I could not get context menu or double click on the connectors, I could not connect two figures...    <br />Well, actually I could, but the <em>connectors </em>were at incorrect location of the screen and it looked like it is &quot;shifted&quot;...     <br />See the problem now?</p>  <p>The problem is that a paint area should always start at top left absolute position. What a horrible discovery.</p>  <p>I spent lots of my time for this stuff and now it seems to be unacceptable.</p>  <p>The <a href="http://www.openjacob.org/forum/viewtopic.php?t=77" target="_blank">solution</a> I found should solve the problem, BUT (as always, there's a <em>but</em>) I should use NO NAMESPACE version of this library. I don't really like it because of 2 reasons:</p>  <ol>   <li>I have to rewrite lots of code. </li>    <li>It's much more error prone and might conflict with other JavaScript implementation. </li> </ol>  <p>But I don't see any choice for now. I have to start removing all the namespaces I used so carefully...</p>  </div>

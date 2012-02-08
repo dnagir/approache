@@ -1,0 +1,88 @@
+---
+layout: post
+title: "ASP.NET MVC empty values and string binding"
+date: 2009-09-01T16:44:00+10:00
+categories:
+ - Development
+ - model-binder
+ - asp.net mvc
+---
+
+<div class='post'>
+I have mentioned that empty strings never have null values during data binding. Instead they are empty strings. If we don’t do anything with it, it will propagate to the database. I don’t really want to have empty strings in there. Nulls should be in the database instead. The easiest solution is to re-implement the default data-binder. And here it is:<br />
+<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">class</span> NullStringModelBinder : DefaultModelBinder {
+    <span class="kwrd">public</span> <span class="kwrd">override</span> <span class="kwrd">object</span> BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
+        <span class="kwrd">if</span> (bindingContext.ModelType == <span class="kwrd">typeof</span>(<span class="kwrd">string</span>)) {
+            ValueProviderResult result;
+            bindingContext.ValueProvider.TryGetValue(bindingContext.ModelName, <span class="kwrd">out</span> result);
+            <span class="kwrd">if</span> (result != <span class="kwrd">null</span>) {
+                <span class="kwrd">try</span> {
+                    var str = (<span class="kwrd">string</span>)result.ConvertTo(<span class="kwrd">typeof</span>(<span class="kwrd">string</span>));
+                    <span class="kwrd">if</span> (<span class="kwrd">string</span>.IsNullOrEmpty(str))
+                        <span class="kwrd">return</span> <span class="kwrd">null</span>; <span class="rem">// These two lines are the only ones I need</span>
+                    <span class="kwrd">return</span> str;
+                } <span class="kwrd">catch</span> (Exception ex) {
+                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, ex);
+                    <span class="rem">// Don't forget to set value to Workaround ASP.NET MVC bug</span>
+                    bindingContext.ModelState.SetModelValue(bindingContext.ModelName, <span class="kwrd">new</span> ValueProviderResult(<span class="kwrd">null</span>, <span class="kwrd">null</span>, CultureInfo.CurrentCulture));
+                }
+            }
+        }
+        <span class="kwrd">return</span> <span class="kwrd">base</span>.BindModel(controllerContext, bindingContext);
+    }
+}</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+<br />
+I don’t know if this is a good solution and for me it really seems the empty values should be bound as NULLs for strings. The reasoning is simple: <b><i>if user does not provide value it is null</i></b>. With this solution user <b>cannot provide an empty string</b>, but I can live with it for now.<br />
+One options would be NOT to post empty values. But it would not set NULLs to the actual objects if there some other value assigned. Additionally it is not out-of-the box functionality in ASP.NET MVC.<br />
+Thou, would be interesting to know a <i>perfect</i> solution for this.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Works a treat I mean!</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Wors a treat - cheers for that!</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+I don&#39;t want to store any value if user did not provide such. Thus it should be NULL.<br /><br />Additionally ASP.NET MVC 2 will bind the empty string values as NULLs by default. And this is what i expected in ASP.NET MVC 1 as well. Unfortunately it is not the case and I have to fix it manually.</div>
+</div>
+<div class='comment'>
+<div class='author'>DAS</div>
+<div class='content'>
+Sometimes you should store an empty value instead of null.<br /><br />Some controls in my application have EmptyIsNull property wich I use to tell databinding how to store empty values.</div>
+</div>
+</div>

@@ -1,0 +1,47 @@
+---
+layout: post
+title: "Templating done easy - JavaScript HAML with Rails"
+date: 2011-08-19T19:26:00+10:00
+---
+
+<div class='post'>
+<h3>
+HAML templating with no worries: native, precompiled HAML. Blazing fast and as easy to use as it can be. </h3>
+
+<h3>
+<strong>
+<em>UPDATE: this functionality moved into <a href='https://github.com/dnagir/ruby-haml-js'>ruby-haml-js</a> gem, please use it instead.</em>
+</strong>
+</h3>
+
+Recently I have been working on a Ruby gem that packs a set of common JavaScript libraries in one place so you can just reference those easily from <b>Rails 3.1</b> app.  But now I want to write a bit about a very handy tool that the gem includes.  I needed to work on a <a href='http://documentcloud.github.com/backbone'>Backbone</a> app and, unfortunately, there was no very simple and easy way of using HAML markup for my client side templates. Main problems: <ol>
+<li>I don't want to <b>embed</b> the template into the document.</li>
+<li>The Underscore.js templating is ok, but it is <b>too verbose</b> for me (as most of others).</li>
+<li>The <a href="https://github.com/creationix/haml-js">haml-js</a> is great, but I do not want to bother <b>precompiling</b> the templates.</li>
+<li>I do not want to think about templating as another layer or component. I want it to <b>just work</b>.</li>
+</ol>
+
+<div>
+Fortunately it was pretty easy solve these <em>problems</em> with the <a href="https://github.com/sstephenson/sprockets">Sprockets</a> and Rails 3.1.
+</div>
+
+<div>
+So from now on you can just write normal HAML templates and consume those with no worries from JavaScript.
+</div>
+
+<div>
+All you need to do, is to add <a href="https://github.com/dnagir/pakunok">pakunok</a> gem to your Rails 3.1 Gemfile.  This will give you templates as <b>native JavaScript functions</b> that you can use.
+</div>
+
+
+<div>
+It's better to <a href='https://gist.github.com/1156409'>see than hear</a>
+</div>
+
+<div>
+<script src="https://gist.github.com/1156409.js">
+</script>
+</div>
+
+<div>
+ Feel free to head to the <a href="https://github.com/dnagir/pakunok/issues">issues</a> and provide some feedback or <a href="https://github.com/dnagir/pakunok/">read more</a>.</div></div>

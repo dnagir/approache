@@ -1,0 +1,76 @@
+---
+layout: post
+title: "Prefer C# cast but not AS operator"
+date: 2009-09-22T09:27:00+10:00
+categories:
+ - Development
+ - remember
+ - .net
+ - skills
+---
+
+<div class='post'>
+I see misuse of these 2 operators on every and each forum approximately at least couple of times a week. People don’t know/realise (or don’t want to) that there is significant difference in two code snippets below (I found similar on one of the forums):<br />
+<pre class="csharpcode">var unknown = (<span class="kwrd">object</span>)<span class="kwrd">new</span> List&lt;<span class="kwrd">string</span>&gt;();
+
+<span class="rem">// Snippet 1: as operator</span>
+<span class="kwrd">foreach</span> (var item <span class="kwrd">in</span> unknown <span class="kwrd">as</span> IList&lt;<span class="kwrd">int</span>&gt;) {
+ <span class="rem">// Do something with item</span>
+}
+
+
+<span class="rem">// Snippet 2: cast operator</span>
+<span class="kwrd">foreach</span> (var item <span class="kwrd">in</span> (IList&lt;<span class="kwrd">int</span>&gt;)unknown) {
+ <span class="rem">// Do something with item</span>
+}</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style><br />
+Both snippets will throw an exception. But, there is a big BUT.<br />
+The first snippet will throw <b>NullReferenceException (Object reference not set to an instance of an object)</b>. Go and guess what’s going on. Especially in production when you probably don’t have call stack with code line information, especially in just a bit more complex scenario. <b>No useful information here at all.</b><br />
+The second one will throw too, but it will be <b>InvalidCastException (Unable to cast object of type 'System.Collections.Generic.List`1[System.String]' to type 'System.Collections.Generic.IList`1[System.Int32]')</b>.<br />
+See the difference? The later one tells you what exactly is wrong so you have a good starting point of fixing the issue.<br />
+Generally I would tell to <b>never use AS operator</b> (even if you <i><b>think you know</b></i> the exact type NOW, you cannot be sure tomorrow) unless:<br />
+<ol>
+<li>You explicitly expect different type(s).</li>
+<li>You want to determine type using IS operator (really bad practice, consider simple polymorphism instead).</li>
+<li>You want to improve performance (though it is really, really rarely worth it).</li>
+</ol>
+<br />
+Additionally, <b>in any case</b> you should <b>check the casting result for null</b>. Always check it for null. Do you hear me? <b>ALWAYS!</b></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Rick, you are absolutly right. There is no reason to use casting in the foreach as it will implicitly call GetEnumerator on the object which in turn can give NullReferenceException.<br /><br />The code I showed here is an example I saw on a forum, so just reused it. The issue you pointed out is a valid and major one. But I did not terget it in my post here... Well... I at least told to ALWAYS check for null :)... Should just add to check for null everything.</div>
+</div>
+<div class='comment'>
+<div class='author'>Rick W</div>
+<div class='content'>
+Hmmm, I would say &quot;Never write it either of these ways if there is any chance it will throw an exception&quot;. If you are not in 100% control of what object is being used as the enumerable object, you should use var LoopObj = obj as TypeX and then check Abc for null before you use it in the loop. If you are in control of the object, then it still depends on if it is possible that the object might be possibly be null on it&#39;s own, in which case I will still do it as I advise.<br /><br />Rick W (from Eco forum)</div>
+</div>
+</div>

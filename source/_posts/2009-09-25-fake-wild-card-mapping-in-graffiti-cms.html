@@ -1,0 +1,26 @@
+---
+layout: post
+title: "Fake wild-card mapping in Graffiti CMS"
+date: 2009-09-25T10:39:00+10:00
+categories:
+ - .net
+ - Software
+ - nice
+---
+
+<div class='post'>
+I have just installed <a href="http://graffiticms.com/" target="_blank">Graffiti CMS</a> to play with it. <br />
+After the installation I created a test post and only after that noticed the URL:   <br /><span style="font-family: Courier New;">http://localhost/Graffiti/<b>first-post</b></span><br />
+Notice there is not any extension and the URL looks very clear. But HOW? I did not do neither of the following:<br />
+<ol>
+<li>Added wild-card mapping;</li>
+<li>Configured Web.config with IIS 7 as I have IIS 6;</li>
+<li>Run any script or something.</li>
+</ol>
+Then I looked at the folder of Graffiti CMS and found it has the folder named “first-post” in the root which contains only one file - Default.aspx.<br />
+The Default.aspx is auto-generated and just has some settings. The content is stored in the database.<br />
+Do you see now how this wildcard-mapping works?<br />
+It just allows IIS to handle friendly-urls by creating a real resource. But the actual URL that gets processed on the server is:   <br /><span style="font-family: Courier New;">http://localhost/Graffiti/<b>first-post/Default.aspx</b></span><br />
+That does make assumption that IIS has Default Document with name “Default.aspx”. Removing it will kill the whole idea of such friendly-urls.<br />
+The idea is dead simple and indeed a good one.<br />
+I am not sure weather I like it or not. One thing I definitely don’t like so far is the fact that the folder will get polluted with all those folders and files.</div>

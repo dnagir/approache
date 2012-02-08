@@ -1,0 +1,124 @@
+---
+layout: post
+title: "MVC Controller Action Return Values"
+date: 2008-03-17T23:16:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }</style>  <p>Just a quick thought about actions in MVC (MonoRail or ASP.NET MVC).</p>  <p>Often there is a need to return JSON or XML result from an action.    <br />Common solution is rendering specific view or some kind of &quot;Response.Write&quot;-ing; so the code usually looks like this:</p>  <div class="csharpcode">   <pre><span class="lnum">   1:  </span>        <span class="kwrd">public</span> <span class="kwrd">void</span> FindProducts(<span class="kwrd">string</span> query)</pre>
+
+  <pre><span class="lnum">   2:  </span>        {</pre>
+
+  <pre><span class="lnum">   3:  </span>            IProductList products = GetProducts(query);</pre>
+
+  <pre><span class="lnum">   4:  </span>            PropertyBag.Add(<span class="str">&quot;products&quot;</span>, products);</pre>
+
+  <pre><span class="lnum">   5:  </span>&#160;</pre>
+
+  <pre><span class="lnum">   6:  </span>            RenderView(<span class="str">&quot;ProductsJsonResult&quot;</span>);</pre>
+
+  <pre><span class="lnum">   7:  </span>        }</pre>
+
+  <pre><span class="lnum">   8:  </span>&#160;</pre>
+
+  <pre><span class="lnum">   9:  </span>        <span class="rem">// Or this way</span></pre>
+
+  <pre><span class="lnum">  10:  </span>&#160;</pre>
+
+  <pre><span class="lnum">  11:  </span>        <span class="kwrd">public</span> <span class="kwrd">void</span> FindProducts(<span class="kwrd">string</span> query)</pre>
+
+  <pre><span class="lnum">  12:  </span>        {</pre>
+
+  <pre><span class="lnum">  13:  </span>            IProductList products = GetProducts(query);</pre>
+
+  <pre><span class="lnum">  14:  </span>            Response.Write( JsonSerialize(products) );</pre>
+
+  <pre><span class="lnum">  15:  </span>        }</pre>
+</div>
+
+<p>It seems for me that the returning value is much more logical. Why don't we ever use return values and mark actions with <strong>void</strong>... 
+
+  <br />...the code would be looking much better:</p>
+
+<div class="csharpcode">
+  <pre><span class="lnum">   1:  </span>        [<strong>ResultConverter</strong>(JsonConverter)]</pre>
+
+  <pre><span class="lnum">   2:  </span>        <span class="kwrd">public</span> <strong>IProductList</strong> FindProducts(<span class="kwrd">string</span> query)</pre>
+
+  <pre><span class="lnum">   3:  </span>        {</pre>
+
+  <pre><span class="lnum">   4:  </span>            <span class="kwrd">return</span> GetProducts(query);</pre>
+
+  <pre><span class="lnum">   5:  </span>        }</pre>
+</div>
+
+<p>&#160;</p>
+
+<p>If the <em>ResultConverter</em> attribute is not applied, than Json or Xml should be used by default.</p>
+
+<p>I like this stuff. I believe it's not that hard to introduce such a feature in both MonoRail and ASP.NET MVC.</p>
+
+<p>I don't know why nobody has asked about it before. Maybe I just haven't seen or don't know, maybe even it's already implemented and I'm not aware of it.</p>
+
+<p>Anyway ASP.NET already supports it in Web Services (different things to compare, but still). I personally don't like to write Web Service just to allow some page to get data from it (yes, that's about WebForms). And would not prefer web service for HTML pages over controller actions. </p>
+
+<p>&#160;</p>
+
+<p><strong>UPDATE (19/03/2008):</strong></p>
+
+<p>Returning (serialising) an object is a very simple procedure and in many cases applying attribute to serialise Object becomes non-practical. But I have another idea of using a return value.</p>
+
+<p>Most of actions end with <em>RenderView</em> call, even if the view is chosen dynamically.
+
+  <br />In most cases there is no code after the <em>RenderView</em> is called and the result of a common action is a View. <strong>This is exactly returning a value</strong>. </p>
+
+<p>So why not return a <em>ViewDetails</em> as a return value? </p>
+
+<p>Imaginary code:</p>
+
+<pre class="csharpcode"><span class="kwrd">public</span> ViewDetails Find(<span class="kwrd">string</span> name)
+{
+    <span class="kwrd">if</span> (<span class="kwrd">string</span>.IsNullOrEmpty(name))
+        <span class="kwrd">return</span> <span class="kwrd">new</span> InvalidArgumentView(<span class="str">&quot;name&quot;</span>, name);
+    var result = GetTheObjectsFromSomewhere(name);
+    <span class="kwrd">if</span> (result.Count &gt; 0)
+        <span class="kwrd">return</span> <span class="kwrd">new</span> SearchResultView(result);
+    <span class="kwrd">else</span>
+        <span class="kwrd">return</span> <span class="kwrd">new</span> NoResultsView(name);
+}</pre>
+
+<p>It <a href="http://forums.asp.net/t/1234577.aspx#2241063">seems</a> like some some stuff is going to be implemented with return values...</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>TV Digital</div>
+<div class='content'>
+Hello. This post is likeable, and your blog is very interesting, congratulations :-). I will add in my blogroll =). If possible gives a last there on my blog, it is about the <A HREF="http://tv-digital-brasil.blogspot.com" REL="nofollow">TV Digital</A>, I hope you enjoy. The address is http://tv-digital-brasil.blogspot.com. A hug.<A HREF="5161088561" REL="nofollow"></A></div>
+</div>
+</div>

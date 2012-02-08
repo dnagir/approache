@@ -1,0 +1,36 @@
+---
+layout: post
+title: "ASP.NET MasterPages and Url Rebasing"
+date: 2009-01-08T15:36:00+11:00
+categories:
+ - tricks
+ - Development
+ - asp.net
+---
+
+<div class='post'>
+Always learn something new. I really didn't know that.<br />
+I paid some attention to my MasterPage and the link to CSS file. Here is what I noticed.<br />
+<br />
+The default Site.Master has this markup:<br />
+<pre>&lt;head runat="server"&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+    <b>&lt;link href="../../Content/Site.css" rel="stylesheet" type="text/css" /&gt;</b>
+&lt;/head&gt;</pre>
+I expected the link href will always be static as it is set: <b>"../../Content/Site.css"</b><br />
+It means pages like these would have the CSS:<br />
+<ul>
+<li>Home/One/Index.aspx </li>
+<li>Home/Two/Index.aspx </li>
+<li>Product/One/Edit.aspx </li>
+</ul>
+and I expected following ones would not have CSS because of broken link:<br />
+<ul>
+<li>Home/Index.aspx </li>
+<li>Home/Two/Three/Index.aspx </li>
+<li>Product/Category/One/Edit.aspx</li>
+</ul>
+but I wondered that the HREF of the link has always been generated correctly!<br />
+How come? <br />
+The answer is <a href="http://forums.asp.net/t/1368323.aspx#2853085" target="_blank">Url Rebasing</a> - the feature of the master pages.<br />
+The runtime will try to “rebase” relative URLs it finds on <b>server-side</b> controls inside a master page and paths it finds inside of the head tag.</div>

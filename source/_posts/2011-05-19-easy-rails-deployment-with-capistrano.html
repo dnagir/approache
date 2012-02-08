@@ -1,0 +1,107 @@
+---
+layout: post
+title: "Easy Rails deployment with Capistrano and custom Nginx configs"
+date: 2011-05-19T00:58:00+10:00
+categories:
+ - linux
+ - nginx
+ - ruby-on-rails
+---
+
+<div class='post'>
+<p>
+In my <a href="http://blog.approache.com/2011/05/setting-up-ubuntu-1104-server-for-rails.html">previous post</a> I provided some info about setting up the server for rails app.
+
+</p>
+
+<p>
+Now I am going to describe the Nginx configuration and example of Capistrano deployment file.
+</p>
+
+<p>
+One thing that I don't want to do for every new app I deploy is to go to the web server and change the settings (as a root user) so that the web server picks the Rails application.
+</p>
+
+<p>
+In order to avoid that I decided to use nginx's <a href="http://wiki.nginx.org/CoreModule#include">include</a> command. It allows to add include multiple nginx config files using UNIX wildcards.
+</p>
+
+<p>
+So by simply adding this line to the nginx.config I make it possible to configure Nginx from Rails applicatoins themselves:
+<code>include /home/*/apps/*/current/nginx.conf;</code>.
+
+I decided to include all configs within <code>http</code> tag so that a Rails app can configure multiple servers for itself.
+</p>
+
+<p>
+There are obvious drawbacks for this:
+
+<ol>
+<li>It is less "safe" as on application might affect others if you will start adding Nginx settings outside of the <code>server</code> tag. But I am ready to sacrifice this for the sake of having more flexibility by assuming all server citizens are good guys.</li>
+<li>We still need to have root access to restart the Nginx. We shouldn't need to do it often, so that's ok with me.</li>
+</ol>
+
+Now relying on a very simple conventions, I can configure Nginx from within the app. Just in case you've missed it, the conventions are:
+
+<ol>
+<li>To deploy a rails app (and any Rack based app), user should put the app under his home directory in <code>apps/[name]/current</code>.</li>
+<li>To "enable" an app, user should put <code>nginx.conf</code> file in <code>apps/[name]/current</code>.</li></ol>
+
+</p>
+
+
+<p>
+But for now, all this cool structure isn't very helpful unless we deploy the app.
+</p>
+
+<p>
+I went with the Ruby de-facto deployment tool - Capistrano. There are enough resources on the net on how to "Capify" your application, so I won't go into details. I assume you have just done <code>capify .</code> and understand what is going in there.
+</p>
+
+<p>
+Briefly, what I need to do is following:
+
+<ol>
+<li>Deploy the app explicitly to a particular domain (staging, production, local server etc).</li>
+<li>On every deployment - backup SQLite database (I know, I'll use something better when I'll have 1 million users).</li>
+<li>Prepare Nginx config file for the server (it depends on the domain we deploy at).</li>
+<li>Pre-Compile assets (SCSS in my case).</li>
+</ol>
+
+</p>
+
+<p>
+So grab <a href="https://gist.github.com/978737">the gist</a> (embedded below) with all the details and let me know what can be improved there. The usage is pretty simple: 
+</p>
+
+<p>
+<code>cap deploy user=dnagir domain=connecty.approache.com</code>
+</br />
+You can deploy the same app multiple times to the same server with different subdomains and they will not conflict:
+<br />
+
+<code>cap deploy user=dnagir domain=staging.connecty.approache.com</code>
+<br />
+<code>cap deploy user=dnagir domain=demo.connecty.approache.com</code>
+
+</p>
+
+<p>
+The most interesting I think is that the <code>nginx.conf</code> file is created during deployment using default Ruby templating engine and transfered over to the right location on the server. (But still remember root-ed Nginx restart is still required).
+</p>
+
+<p>You can look at the complete source in the <a href="https://github.com/dnagir/connecty/tree/bdd10b8e2bcd946a62cc66075d87ac107e513305">Connecty project</a> at Github.
+</p>
+
+<p>Please feel free to tell me what you think about this process.</p>
+
+<script src="https://gist.github.com/978737.js?file=deploy.rb"></script>
+<script src="https://gist.github.com/978737.js?file=nginx.production.conf.erb"></script></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>jlertle</div>
+<div class='content'>
+Love it!</div>
+</div>
+</div>

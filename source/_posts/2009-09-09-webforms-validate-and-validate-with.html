@@ -1,0 +1,44 @@
+---
+layout: post
+title: "WebForms Validate and Validate with group"
+date: 2009-09-09T10:13:00+10:00
+categories:
+ - Development
+ - asp.net
+ - validation
+---
+
+<div class='post'>
+.NET 2.0 introduced a new method Validate on the page. It has additional parameter: validation group. As we all know and name suggests it indicates the group the validation should be applied to.<br />
+But how do old Validate and new Validate(validationGroup) methods work together?<br />
+Here is the flow when the the validation is executed via Validate(validationGroup) (it is the case with controls that have CausesValidation property):<br />
+<ol>
+<li>Validate(validationGroup) is executed.</li>
+<li>It retrieves all the validators for the given group.</li>
+<br />
+<ol>
+<li>Comparison is case-insensitive.</li>
+<li>By default validationGroup is empty string for all validators and the controls that cause the validation.</li>
+</ol>
+<br />
+<li>If the validationGroup is default one (eg: empty string) AND number of validators for the empty group is the same as total number of validators:</li>
+<br />
+<ol>
+<li>YES: Fallback to the .NET 1.1 Validation without validation group.</li>
+<li>NO: Execute each validator retrieved in step 2.</li>
+</ol>
+</ol>
+The flow if you call validation using the old way: Validate without parameters. It just executes the step 1.1 described above.<br />
+So the moral is, if you override the Validate without parameters to perform custom logic it won’t necessarily be called every time. So the moral of the story is:<br />
+<ol>
+<li>Use only one validation method. And it must be Validate with validationGroup as it is called automatically by the controls and at the step 3.2 ignores the default (Validate without parameters) method.</li>
+<li>Override only one validation method to avoid double validation logic (which should be the same as in point 1).</li>
+<li>Make sure you manually call only one validation method. Again according to 1.</li>
+</ol>
+So we really should keep this in mind as forgetting to call Validate() instead of Validate(string.Empty) will break the validation, and very likely to be found in production as WebForms testing is painful.<br />
+I think this approach is wrong. It’s aim was to maintain backwards compatibility (which works up to some point). But it had one of the following ways:<br />
+<ol>
+<li>I would better prefer to have broken interface and removed/obsolete old Validate (without parameter) method.</li>
+<li>To avoid breaking functionality the default Validate had to call Validate(string.Empty) and not other way around.</li>
+</ol>
+So after migrating to ASP.NET 2.0 still fighting WebForms… and its “compatibility” which “hidden incompatibility”.</div>

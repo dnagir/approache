@@ -1,0 +1,47 @@
+---
+layout: post
+title: "From MsTest to NUnit"
+date: 2009-04-21T17:32:00+10:00
+categories:
+ - Development
+ - testing
+ - mstest
+ - nunit
+---
+
+<div class='post'>
+That’s pretty easy to switch from MsTest to NUnit (or other xUnit framework, but I’ve decided I want NUnit). You need to do following steps:<br />
+<ol>
+<li>Change the Visual Studio project type:</li>
+<br />
+<ol>
+<li>Unload the project with tests.</li>
+<li>Remove &lt;ProjectTypeGuids&gt; node from there.</li>
+<li>Save and reload the project.</li>
+</ol>
+<br />
+<li>Replace Reference from MsTest to your xUnit.</li>
+<li>Replace using statements (Remove Microsoft.VisualStudio.TestTools.UnitTesting, add NUnit.Framework and optionally NUnit.Framework.SyntaxHelpers).</li>
+<li>Replace (just use Find and Replace in Files) [TestClass] to [TestFixture].</li>
+<li>Replace [TestMethod] to [Test].</li>
+<li>Replace [TestInitialize] to [SetUp].</li>
+<li>Replace [TestCleanup] to [TearDown]</li>
+<li>Now you should be able to compile the tests.</li>
+<li>Clean all the stuff from MsTest (TestResults folder, Solution Items that describe test data).</li>
+</ol>
+Pretty easy.<br />
+The note is (if you don’t know) that there’s no build-in runner for Visual Studio (unlike MsTes), so you’ll need to run tests:<br />
+<ol>
+<li>from outside of Visual Studio by GUI runner</li>
+<li>using <a href="http://testdriven.net/" target="_blank">TestDriven.NET</a></li>
+<li>using <a href="http://www.jetbrains.com/resharper/" target="_blank">ReSharper</a>.</li>
+</ol>
+That’s it. I’m back with old good NUnit.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>kit</div>
+<div class='content'>
+Very handy, thanks :)</div>
+</div>
+</div>

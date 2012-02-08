@@ -1,0 +1,234 @@
+---
+layout: post
+title: "OnActionExecuting in ASP.NET MVC unit tests"
+date: 2009-01-06T15:39:00+11:00
+categories:
+ - Development
+ - testing
+ - mocking
+ - asp.net mvc
+---
+
+<div class='post'>
+I'm doing some initialisation in my application base controller class. Let's say for our example that <b>some</b> of our controllers of our application need to have Language object defined. So that every page knows how to be localised.<br />
+Let's also say we are not sure at this stage how we want to define the language. Possible options are:<br />
+<ul>
+<li>App/Lang-1/Something/Else.aspx </li>
+<li>App/Something/Else.aspx?lang=1 </li>
+<li>etc </li>
+</ul>
+But we just need that Language object now. So the things we need to do are:<br />
+<ol>
+<li>Add CurrentLanguage property to base controller. </li>
+<li>Retrieve CurrentLanguage using my <a href="http://dnagir.blogspot.com/2009/01/aspnet-mvc-request-valueproviderresult.html">GetObjectFromRrequest</a>. </li>
+<li>Define the route(s). </li>
+</ol>
+<br />
+No problems at all. All is done:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public abstract</span> <span style="color: blue;">class</span> LanguageEnabledController :  BaseAppController {
+
+    <span style="color: blue;">private</span> Language currentLanguage;
+
+    <span style="color: blue;">public</span> Language CurrentLanguage {
+        get {
+            <span style="color: blue;">if</span> (currentLanguage == <span style="color: blue;">null</span>)
+                <span style="color: blue;">throw</span> <span style="color: blue;">new</span> InvalidOperationException(<span style="color: #006080;">"The language should be explicitly assigned. We don't want to provide a fallback."</span>);
+            <span style="color: blue;">return</span> currentLanguage;
+        }
+    }
+
+
+    <span style="color: blue;">public</span> IWorkSpace WorkSpace {
+        get {
+            <span style="color: green;">// Stripped...</span>
+        }
+    }
+
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> OnActionExecuting(ActionExecutingContext context) {
+        <span style="color: blue;">base</span>.OnActionExecuting(filterContext);
+        currentLanguage = GetObjectFromRequest&lt;Language&gt;(<span style="color: #006080;">"language"</span>);
+        <span style="color: blue;">if</span> (currentLanguage == <span style="color: blue;">null</span>) {
+            <span style="color: green;">// Invalid language object or missing URL</span>
+            context.Result = RedirectToAction(<span style="color: #006080;">"WrongLanguage"</span>, <span style="color: #006080;">"Error"</span>, <span style="color: blue;">new</span> { language = ValueProvider.GetValue(<span style="color: #006080;">"language"</span>) });
+        }
+    }
+
+
+    <span style="color: blue;">public</span> TObject GetObjectFromRequest&lt;TObject&gt;(<span style="color: blue;">string</span> name) <span style="color: blue;">where</span> TObject: <span style="color: blue;">class</span>, ILoopBack {
+        var vpr = ValueProvider.GetValue(name);
+        <span style="color: blue;">if</span> (vpr == <span style="color: blue;">null</span>)
+            <span style="color: blue;">return</span> <span style="color: blue;">null</span>;
+        <span style="color: blue;">return</span> WorkSpace.GetObject&lt;TObject&gt;(vpr.AttemptedValue);
+    }
+
+}
+
+<span style="color: green;">/*</span>
+<span style="color: green;">Also add the route like this:</span>
+<span style="color: green;">*/</span>
+routes.MapRoute(
+    <span style="color: #006080;">"DefaultWithLanguage"</span>,
+    <span style="color: #006080;">"Lang-{language}/{controller}/{action}.aspx"</span>,
+    <span style="color: blue;">new</span> { controller = <span style="color: #006080;">"Home"</span>, action = <span style="color: #006080;">"Index"</span> }
+    );</pre>
+</div>
+<br />
+Ok. This works just great. Every controller now has CurrentLanguage property set correctly. If not, it will give us a message about that. So far so good.<br />
+But I spot a problem trying to test my class. Of course, the CurrentLanguage property is never set in tests because of OnActionExecuting is never called.<br />
+So what I need now is making this property accessible in tests. I see following options:<br />
+<ol>
+<li>Reward CurrentLanguage property with a setter. </li>
+<li>Inject a service into controllers' constructor for that.</li>
+<li>Simulate OnActnioExecuting.</li>
+</ol>
+The easiest one is 1st, but we don't look for an easy way. I don't like this because of CurrentLanguage is really read-only. We'll have test code in production. It will also avoid using Routes and binding which I prefer to stay and be part of the test (thou we don't actuall test it).<br />
+The 2nd is probably the most correct one, but I don't want to have service and implementation of it for a single property. I don't want to use dependency injection in for now. And I don't want to rewrite number of controller for that.<br />
+So I choose the 3rd one. Why is it bad? Because of we'll have to simulate ControllerInvoker or some part of it. So let's get to it.<br />
+But we have a problem with this approach: OnContextExecuting is PROTECTED method. We need to do following:<br />
+<ol>
+<li>Publish OnActionExecuting somehow to make it callable from tests.</li>
+<li>Simulate the Controllerinvoker.</li>
+</ol>
+The 2st step sounds like test-code in productino, but what it really is - just initialisation of the controller. Nothing wrong if it will be public (yes, publishing OnActionExecuting).<br />
+So let's now put it all together and see the code.<br />
+<b>Controller:</b><br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public</span> <span style="color: blue;">class</span> LanguageEnabledController :  BaseAppController {
+
+    <span style="color: blue;">public</span> IWorkSpace WorkSpace {
+        get {
+            <span style="color: green;">// Stripped</span>
+        }
+    }
+
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> OnActionExecuting(ActionExecutingContext filterContext) {
+        <span style="color: blue;">base</span>.OnActionExecuting(filterContext);
+        InitAppController(filterContext);
+    }
+
+    <span style="color: blue;">public</span> <span style="color: blue;">virtual</span> <span style="color: blue;">void</span> InitAppController(ActionExecutingContext context) {
+        currentLanguage = GetObjectFromRequest&lt;Language&gt;(<span style="color: #006080;">"language"</span>);
+        <span style="color: blue;">if</span> (currentLanguage == <span style="color: blue;">null</span>) {
+            <span style="color: green;">// Invalid language object or missing URL</span>
+            context.Result = RedirectToAction(<span style="color: #006080;">"WrongLanguage"</span>, <span style="color: #006080;">"Error"</span>, <span style="color: blue;">new</span> { language = ValueProvider.GetValue(<span style="color: #006080;">"language"</span>) });
+        }
+    }
+
+
+    <span style="color: blue;">public</span> TObject GetObjectFromRequest&lt;TObject&gt;(<span style="color: blue;">string</span> name) <span style="color: blue;">where</span> TObject: <span style="color: blue;">class</span>, ILoopBack {
+        var vpr = ValueProvider.GetValue(name);
+        <span style="color: blue;">if</span> (vpr == <span style="color: blue;">null</span>)
+            <span style="color: blue;">return</span> <span style="color: blue;">null</span>;
+        <span style="color: blue;">return</span> WorkSpace.GetObject&lt;TObject&gt;(vpr.AttemptedValue);
+    }
+
+}</pre>
+</div>
+<br />
+<b>And the base test class:</b><br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public</span> <span style="color: blue;">abstract</span> <span style="color: blue;">class</span> BaseControllerTest&lt;TController&gt; <span style="color: blue;">where</span> TController : BaseAppController {
+
+    [TestInitialize]
+    <span style="color: blue;">public</span> <span style="color: blue;">void</span> TestInit() {
+        SetUp();
+    
+        var methodParameterValues = <span style="color: blue;">new</span> Dictionary&lt;<span style="color: blue;">string</span>, <span style="color: blue;">object</span>&gt;(StringComparer.OrdinalIgnoreCase);
+        var preContext = <span style="color: blue;">new</span> ActionExecutingContext(<span style="color: blue;">this</span>.Controller.ControllerContext, methodParameterValues);
+        Controller.InitAppController(preContext);            
+    }
+    
+    <span style="color: blue;">protected</span> <span style="color: blue;">virtual</span> <span style="color: blue;">void</span> SetUp() {           
+    }
+    
+    
+    <span style="color: blue;">private</span> TController controller;
+    <span style="color: blue;">public</span> TController Controller {
+        get {
+            <span style="color: blue;">if</span> (controller == <span style="color: blue;">null</span>)
+                controller = CreateTestController();
+            <span style="color: blue;">return</span> controller;
+        }
+    }
+    <span style="color: blue;">private</span> TController CreateTestController() {
+        TController c = Activator.CreateInstance&lt;TController&gt;();
+        PrepareTestController(c);
+        <span style="color: blue;">return</span> c;
+    }
+    
+    
+    IWorkSpace CreateNewSpace() {
+        var ws = <span style="color: blue;">new</span> UnitTestsWorkSpace();
+        <span style="color: blue;">return</span> ws;
+    }
+    
+    <span style="color: blue;">private</span> <span style="color: blue;">void</span> PrepareTestController(TController c) {
+        c.ProviderOfWorkSpace = <span style="color: blue;">new</span> LocalInstanceWorkSpaceProvider(() =&gt; CreateNewSpace());
+        c.SetTestContext(); <span style="color: green;">// Extension to set Fake HttpContext</span>
+    }
+    
+    <span style="color: blue;">protected</span> IWorkSpace WorkSpace {
+        get {
+            <span style="color: blue;">return</span> Controller.WorkSpace;
+        }
+    }
+}</pre>
+</div>
+<br />
+Now we can easily execute tests like in this example:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;">[TestClass]
+<span style="color: blue;">public</span> <span style="color: blue;">class</span> TestBusinessObjectController : BaseControllerTest&lt;TopicController&gt; {
+
+    Language defaultLanguage;
+    Language french;
+
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> SetUp() {
+        french = <span style="color: blue;">new</span> Language(WorkSpace) {
+            Code = <span style="color: #006080;">"fr-FR"</span>,
+            Name = <span style="color: #006080;">"French"</span>
+        };
+        defaultLanguage = <span style="color: blue;">new</span> Language(WorkSpace) {
+            Code = <span style="color: #006080;">"en-AU"</span>
+            Name = <span style="color: #006080;">"Aussie English"</span>
+        }
+        WorkSpace.UpdateDatabase();
+        
+        <span style="color: green;">// We need to put the ID of the language into any place that ValueProvider searches in...</span>
+        Controller.RouteData.Values[<span style="color: #006080;">"language"</span>] = defaultLanguage.ExternalId(); <span style="color: green;">// Extension to get an ID</span>
+    }
+
+
+    [TestMethod]
+    <span style="color: blue;">public</span> <span style="color: blue;">void</span> SelfCheck_ControllerHasLanguageSet() {
+        Assert.IsNotNull(Controller.CurrentLanguage);
+        Assert.AreEqual(<span style="color: #006080;">"en-AU"</span>, Controller.CurrentLanguage.Code);
+    }
+
+    [TestMethod]
+    <span style="color: blue;">public</span> <span style="color: blue;">void</span> ListTopicsReturnsAussieTopic() {
+        var expected = <span style="color: blue;">new</span> Topic(WorkSpace) {
+            Content = <span style="color: #006080;">"Aussie"</span>
+            Language = defaultLanguage
+        };
+        <span style="color: blue;">new</span> Topic(WorkSpace) {
+            Content = <span style="color: #006080;">"Who knows"</span>,
+            Language = french
+        }
+
+        <span style="color: green;">// We expect the Index returs all topics of current language only</span>
+        var topic = Controller.Index().ViewData.AsObject&lt;IEnumerable&lt;Topic&gt;&gt;(<span style="color: #006080;">"data"</span>).First();
+        Assert.AreEqual(expected, topic);
+    }
+}</pre>
+</div>
+<br />
+The keys are:<br />
+<ul>
+<li>public virtual InitAppController.</li>
+<li>Using <a href="http://dnagir.blogspot.com/2009/01/aspnet-mvc-request-valueproviderresult.html">GetObjectFromRrequest</a>. </li>
+<li>Creating ActionExecutingContext.</li>
+</ul>
+<br />
+Enjoy!</div>

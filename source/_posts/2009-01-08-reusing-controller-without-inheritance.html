@@ -1,0 +1,236 @@
+---
+layout: post
+title: "Reusing Controller without inheritance"
+date: 2009-01-08T12:41:00+11:00
+categories:
+ - tricks
+ - Development
+ - asp.net mvc
+---
+
+<div class='post'>
+I created couple of controllers that provide some predefined functionality. All I needed is just to inherit from them. Then I decided to move them in a separate library so I would be able to reuse it in other projects. But then I faced a problem. Controllers of my project are forced to be inherited from those ones.<br />
+Thou I don't have a problem with it, I additionally want every controller to have more functionality in it. You know, we always want to have something common in all our controllers.<br />
+If .NET would support <a href="http://en.wikipedia.org/wiki/Multiple_inheritance" target="_blank">multiple inheritance</a> it would not be a problem at all.<br />
+So what I really need in my project is:<br />
+<ol>
+<li>Be able to inherit from any controller in.</li>
+<li>Have additional functionality in any controller.</li>
+<li>Have NO code duplicates.</li>
+</ol>
+<br />
+Again. If we inherit - we cannot have common ADDITIONAL functionality (except the inherited one) and we'll have to duplicate all the code needed in each controller (it seems so at first glance).<br />
+But it is not the case if the base controller supports extensibility. I remembered about <a href="http://www.castleproject.org/MonoRail/documentation/trunk/advanced/dynactions.html" target="_blank">IDynamicActions</a> but it's not fully what I need. I just need to add common functionality to all controllers without inheritance. DynamicActions reuse actions (which I might need soon but not for now).<br />
+Then I remembered <a href="http://ayende.com/Blog/archive/2008/06/04/Review-Umbrella-project.aspx" target="_blank">Umbrella Project Review</a> and it's extension points. The idea was good enough for me and I decided to go with it, but in a simplified way.<br />
+No more words. The end result is below (sample controllers):<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: green;">// Notice CommonControllerExtension and this.Extension</span>
+<span style="color: blue;">public</span> <span style="color: blue;">class</span> HomeController : AbstractBaseController&lt;CommonControllerExtension&gt; {
+    <span style="color: blue;">public</span> ActionResult Index() {
+        ViewData[<span style="color: #006080;">"Username"</span>] = Extension.User.Username;
+        <span style="color: blue;">return</span> View();
+    }
+}</pre>
+</div>
+and other controller<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public</span> <span style="color: blue;">class</span> TopicController : CrudController&lt;Topic, CommonControllerExtension&gt; {
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> PrepareUpdateInfo(UpdateModelInfo updateInfo) {
+        updateInfo.Include(<span style="color: #006080;">"Name"</span>, <span style="color: #006080;">"Content"</span>);
+    }
+
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> IEnumerable&lt;Topic&gt; GetObjectsToList() {
+        <span style="color: green;">// Note Extension.WorkSpace!</span>
+        <span style="color: blue;">return</span> Extension.WorkSpace.Query().Ocl&lt;Topic&gt;(<span style="color: #006080;">"Topic.allInstances-&gt;orderBy(CreatedDate)"</span>);
+    }
+}</pre>
+</div>
+<br />
+The point is that we have two completely different controllers: HomeController is inherited from the abstract one; the TopicController is inherited from the CrudController (which is in turn inherited from abstract one). What they have in common is:<br />
+<ol>
+<li>They explicitly or implicitly inherit from <span style="font-family: Courier New;">AbstractBaseController</span>.</li>
+<li>They have the same generic parameter: <span style="font-family: Courier New;">CommonControllerExtension</span>.</li>
+</ol>
+The second point enables the controller to share common functionality via extension class. It can be single in the whole project or couple of them - your choice.<br />
+Here the main thing <span style="font-family: Courier New;">AbstractBaseController</span><br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public</span> <span style="color: blue;">abstract</span> <span style="color: blue;">class</span> AbstractBaseController&lt;TExtendPoint&gt; : Controller <span style="color: blue;">where</span> TExtendPoint : <span style="color: blue;">class</span>, IControllerExtensionPoint&lt;Controller&gt;, <span style="color: blue;">new</span>() {
+    
+    <span style="color: blue;">private</span> TExtendPoint extension;
+
+
+    <span style="color: #cc6633;">#region</span> Overriden
+
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> OnActionExecuting(ActionExecutingContext filterContext) {
+        <span style="color: blue;">base</span>.OnActionExecuting(filterContext);
+        Extension.OnInit(filterContext);
+        OnInit(filterContext);
+    }
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> OnActionExecuted(ActionExecutedContext filterContext) {
+        <span style="color: blue;">base</span>.OnActionExecuted(filterContext);
+        Extension.OnBeforeRender(filterContext);
+        OnBeforeRender(filterContext);
+    }
+    <span style="color: blue;">protected</span> <span style="color: blue;">override</span> <span style="color: blue;">void</span> OnResultExecuted(ResultExecutedContext filterContext) {
+        OnEnd(filterContext);
+        Extension.OnEnd(filterContext);
+        <span style="color: blue;">base</span>.OnResultExecuted(filterContext);
+    }
+
+    <span style="color: #cc6633;">#endregion</span>
+
+
+    
+    <span style="color: blue;">public</span> TExtendPoint Extension {
+        get {
+            <span style="color: blue;">if</span> (extension != <span style="color: blue;">null</span>)
+                <span style="color: blue;">return</span> extension;
+
+            <span style="color: green;">// Create an instance with default constructor.</span>
+            extension = <span style="color: blue;">new</span> TExtendPoint();
+            extension.Controller = <span style="color: blue;">this</span>;
+            <span style="color: blue;">return</span> extension;
+        }
+    }
+
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Is called when controller is ready to be initialised with additional info.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;param name="context"&gt;The context.&lt;/param&gt;</span>
+    <span style="color: blue;">public</span> <span style="color: blue;">virtual</span> <span style="color: blue;">void</span> OnInit(ActionExecutingContext context) {
+    }
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Is called when controller done it's job and action has been executed, but before the view is rendered.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;param name="context"&gt;The context.&lt;/param&gt;</span>
+    <span style="color: blue;">public</span> <span style="color: blue;">virtual</span> <span style="color: blue;">void</span> OnBeforeRender(ActionExecutedContext context) {
+    }
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Is called when the request has been processed and the controller is ready to clean-up the resourse before it gets disposed.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;param name="context"&gt;The context.&lt;/param&gt;</span>
+    <span style="color: blue;">public</span> <span style="color: blue;">virtual</span> <span style="color: blue;">void</span> OnEnd(ResultExecutedContext context) {
+    }
+
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Gets or sets the head title which is ViewData["HeadTitle"]</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;value&gt;The head title.&lt;/value&gt;</span>
+    <span style="color: blue;">public</span> <span style="color: blue;">string</span> HeadTitle {
+        get {
+            <span style="color: blue;">return</span> ViewData[<span style="color: #006080;">"HeadTitle"</span>].PropGet(o =&gt; o.ToString());
+        }
+        set {
+            ViewData[<span style="color: #006080;">"HeadTitle"</span>] = <span style="color: blue;">value</span>;
+        }
+    }
+
+}</pre>
+</div>
+<br />
+And here is the IControllerExtensionPoint interface:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: green;">/// &lt;summary&gt;</span>
+<span style="color: green;">/// The interface that allows to provide additional functionality to controller without inheritance.</span>
+<span style="color: green;">/// The implementor must have the default constructor.</span>
+<span style="color: green;">/// &lt;/summary&gt;</span>
+<span style="color: green;">/// &lt;typeparam name="TController"&gt;The type of the controller.&lt;/typeparam&gt;</span>
+<span style="color: blue;">public</span> <span style="color: blue;">interface</span> IControllerExtensionPoint&lt;TController&gt; <span style="color: blue;">where</span> TController: Controller {
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Gets or sets the extending controller.</span>
+    <span style="color: green;">/// The setter is automatically invoked just after the instance is created by the controller.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;value&gt;The controller.&lt;/value&gt;</span>
+    TController Controller { get; set; }
+
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Is called when controller is ready to be initialised with additional info.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;param name="context"&gt;The context.&lt;/param&gt;</span>
+    <span style="color: blue;">void</span> OnInit(ActionExecutingContext context);
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Is called when controller done it's job and action has been executed, but before the view is rendered.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;param name="context"&gt;The context.&lt;/param&gt;</span>
+    <span style="color: blue;">void</span> OnBeforeRender(ActionExecutedContext context);
+
+    <span style="color: green;">/// &lt;summary&gt;</span>
+    <span style="color: green;">/// Is called when the request has been processed and the controller is ready to clean-up the resourse before it gets disposed.</span>
+    <span style="color: green;">/// &lt;/summary&gt;</span>
+    <span style="color: green;">/// &lt;param name="context"&gt;The context.&lt;/param&gt;</span>
+    <span style="color: blue;">void</span> OnEnd(ResultExecutedContext context);
+
+}</pre>
+</div>
+Here's the sample implementation sample:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public</span> <span style="color: blue;">class</span> CommonControllerExtension : IControllerExtensionPoint&lt;Controller&gt;, IEcoServiceProvider {
+
+    <span style="color: #cc6633;">#region</span> IControllerExtensionPoint&lt;Controller&gt; Members
+
+    <span style="color: blue;">public</span> Controller Controller { get; set; }
+
+    <span style="color: blue;">public</span> <span style="color: blue;">void</span> OnInit(ActionExecutingContext context) {
+        User = GetTheUserFromSomewhere();
+    }
+
+    <span style="color: blue;">public</span> <span style="color: blue;">void</span> OnBeforeRender(ActionExecutedContext context) { 
+    }
+
+    <span style="color: blue;">public</span> <span style="color: blue;">void</span> OnEnd(ResultExecutedContext context) {
+        <span style="color: blue;">if</span> (ProviderOfWorkSpace != <span style="color: blue;">null</span>)
+            ProviderOfWorkSpace.ReleaseWorkSpace();
+    }
+
+    <span style="color: #cc6633;">#endregion</span>
+
+
+    <span style="color: #cc6633;">#region</span> IEcoServiceProvider Members
+
+    <span style="color: blue;">public</span> T GetEcoService&lt;T&gt;() <span style="color: blue;">where</span> T : <span style="color: blue;">class</span> {
+        <span style="color: blue;">return</span> WorkSpace.GetEcoService&lt;T&gt;();
+    }
+
+    <span style="color: blue;">public</span> <span style="color: blue;">object</span> GetEcoService(Type serviceType) {
+        <span style="color: blue;">return</span> WorkSpace.GetEcoService(serviceType);
+    }
+
+    <span style="color: #cc6633;">#endregion</span>
+
+
+
+    <span style="color: blue;">public</span> IWorkSpaceProvider ProviderOfWorkSpace {
+        get;
+        set;
+    }
+
+    <span style="color: blue;">public</span> IWorkSpace WorkSpace {
+        get {
+            <span style="color: blue;">if</span> (ProviderOfWorkSpace == <span style="color: blue;">null</span>)
+                ProviderOfWorkSpace = <span style="color: blue;">new</span> DefaultWebAppWorkSpaceProvider(() =&gt;
+                    <span style="color: blue;">new</span> XmlWorkSpace());
+            <span style="color: blue;">return</span> ProviderOfWorkSpace.GetWorkSpace();
+        }
+    }
+
+    <span style="color: blue;">public</span> TObject GetObjectFromRequest&lt;TObject&gt;(<span style="color: blue;">string</span> name) <span style="color: blue;">where</span> TObject : <span style="color: blue;">class</span>, ILoopBack {
+        var vpr = Controller.ValueProvider.GetValue(name);
+        <span style="color: blue;">if</span> (vpr == <span style="color: blue;">null</span>)
+            <span style="color: blue;">return</span> <span style="color: blue;">null</span>;
+        <span style="color: blue;">return</span> WorkSpace.GetObject&lt;TObject&gt;(vpr.AttemptedValue);
+    }
+
+    <span style="color: blue;">public</span> User User { get; set; }
+}</pre>
+</div>
+<br />
+What we really have achieved here is reusing functionality with avoiding need of no multiple inheritance. It also supports notification via OnInit, OnBeforeRender and OnEnd methods.<br />
+The drawback is that each controller must be inherited (implicitly or explicitly) from <span style="font-family: Courier New;">AbstractBaseController</span>. The price I'm ready to pay because of I inherit from Controller anyway.<br />
+Enjoy!</div>

@@ -1,0 +1,21 @@
+---
+layout: post
+title: "Stuff learned today - Ruby and Rails"
+date: 2010-12-09T09:50:00+11:00
+categories:
+ - ruby
+ - Development
+ - ruby-on-rails
+---
+
+<div class='post'>
+<ol>
+<li>Ruby ignores underscores in numbers, so you can write 53782156 as&nbsp;53_782_156 which is much nicer.</li>
+<li><a href="https://groups.google.com/group/formtastic/browse_thread/thread/d4b200e3d8073329">Suggested</a> localisation for Formtastic's collections.&nbsp;Not sure whether it is important as it is still pretty easy to workaround.</li>
+<li>To use all the ActiveSupport (v3), do <span class="Apple-style-span" style="font-family: 'Courier New', Courier, monospace;">require 'active_support/all'</span> (note the underscore!).</li>
+<li>We can add methods to associations by opening a block and (but scopes are much cleaner on the other end of association class).</li>
+<li>Testing "access denied" and "requires user" is easier with custom matchers.</li>
+<li>Rails URL helpers are not available in custom matchers for some reason.</li>
+<li>Shoulda's RSpec matcher validates_presence_of does not work with non-persistent models.</li>
+<li>Rails params hash has string keys, not symbols. Got issues with it when relying on keys being symbols.</li>
+</ol></div>

@@ -1,0 +1,16 @@
+---
+layout: post
+title: "MsTest - Not Executed – Time to go to normal xUnit"
+date: 2009-04-21T13:45:00+10:00
+categories:
+ - Development
+ - testing
+ - mstest
+ - nunit
+---
+
+<div class='post'>
+For last couple of days I was trying to figure out why I’m getting “Not Executed” result for all my tests in a project.<br />
+The <a href="http://stackoverflow.com/questions/525578/why-are-all-my-visual-studio-test-results-not-executed" target="_blank">solution</a> (Is it that <a href="http://mrpmorris.blogspot.com/" target="_blank">Peter Morris</a> who posted it?) is to Unblock an assembly (in my case it was Microsoft.Web.Mvc.dll).<br />
+This issue, probably,&nbsp; is a typical example when exceptions are handled and eaten.<br />
+I’m not sure i want something similar to occur again and will probably move to more common unit testing framework like nUnit, MbUnit or xUnit later.</div>

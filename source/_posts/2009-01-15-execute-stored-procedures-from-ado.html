@@ -1,0 +1,19 @@
+---
+layout: post
+title: "Execute stored procedures from ADO"
+date: 2009-01-15T10:59:00+11:00
+categories:
+ - sql
+ - ms-access
+ - Development
+---
+
+<div class='post'>
+The best thing ever in ADO and VBA is that you can execute stored procedures on the database <a href="http://msdn.microsoft.com/en-us/library/aa496035.aspx" target="_blank">like a usual method</a> (see <i>Avoid using the Command object</i>) of the connection object.<br />
+No any additional code, mapping or anything, just a magic.<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">Set</span> products = <span style="color: blue;">New</span> ADODB.Recordset
+Connection.GetCategoryProductsPage catId, 2, 10, products</pre>
+</div>
+That's it - we have the recordset with 10 products at page 2 for catId category.<br />
+I would love to have similar ability in .NET.</div>

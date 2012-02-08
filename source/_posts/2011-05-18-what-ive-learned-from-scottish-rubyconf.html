@@ -1,0 +1,110 @@
+---
+layout: post
+title: "What I've learned from Scottish RubyConf"
+date: 2011-05-18T23:52:00+10:00
+categories:
+ - ruby
+ - vim
+ - linux
+ - ruby-on-rails
+---
+
+<div class='post'>
+<p>
+I watched the videos from the <a href="http://video2010.scottishrubyconference.com/">Scottish RubyConf 2010</a> and thought I could share some interesting moments as simple notes. So there you go:
+</p>
+
+<p>
+
+<code>
+<pre>
+
+Harmony for browser testing
+
+Capybara.driver = :rack_test # uses Harmony and can run JS
+
+Good talk about Arel: 1LT_04-mp4_500mbs.mp4
+
+Rack GeoIP.
+Rack GoogleAnalytics
+Rack::Cache (standard)
+Rack::CacheBuster
+
+Server side include to render page without parts of content that fail
+(Nginx + Rack)
+
+EvenMachine:: WebSockets add-on uses JS like API.
+Other options:
+-em-websocket
+-cramp (higher level websocket)
+-sunshowers
+-node.js
+pusherapp.com
+
+Initialise multiple variables in JS:
+var a = 1, b = 2, noInitialised;
+jQuery has "end" method to go up in the chain.
+
+
+
+VIM
+:copen - opens the console output
+f - find next occurence of char in this line
+dap - delete paragraph
+cap - change
+yap - yank
+ytCHAR - yank from here to next CHAR
+Ctrl-v - visual block mode
+:split, :sp, :vspilt, :vsp - split into 2 wins
+ls - list buffers touched
+q1, q2, q3... - record macro into register
+@1, @2, @3... - play the macro from register
+
+:R - Rails related file
+:A - Rails alternate file
+:Rextract - Rails partial extract
+Shift-k - integrated Ruby ri
+
+figutive.vim - more extensions: Glog, Gblame, Gstatus, Gdiff, Ggrep etc
+snippets.vim
+nerdtree.vim - files tree view
+surround.vim
+unimpaired.vim - auto-brackets
+Hashrocket configured Vim at Github hashrocket/dotmatrix
+Vimium, Vimperator - Vim in browser
+Remotely connect and pair in Vim
+
+
+UTF-8 is backwards compatible with ASCII
+Ruby doesn't know about UTF-16 - it's messy
+
+Globalization TODO:
+- Do same as .NET CultureInfo
+- Do different ways to localize different kinds of langs
+
+
+You can generate UML model of Rails model using:
+railroad -M | dot Tpng > model.png
+uml dumper
+
+Metrics:
+- rake stats # LOCs
+- FLOG Weighting the code AST - Assignment Branch Condition (ABC)
+- FLAY - code similarities
+- Saikuro - cyclomatic complexity
+- Roodi - design issues
+- Reek - design issues and specific smells
+- Churn - changes to file with Git
+- Rcov - test coverage
+- Heckle - test coverage with code mutation
+- metric_fu
+
+
+</pre>
+</code>
+
+</p>
+
+<p>
+You can also grab the <a href="https://gist.github.com/978593">Gist</a>. Hope you find some moment useful.
+</p></div>

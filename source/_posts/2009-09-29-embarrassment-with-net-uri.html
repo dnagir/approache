@@ -1,0 +1,53 @@
+---
+layout: post
+title: "Embarrassment with .NET URI"
+date: 2009-09-29T10:40:00+10:00
+categories:
+ - Development
+ - .net
+ - frustration
+---
+
+<div class='post'>
+I need to work with the <a href="http://en.wikipedia.org/wiki/Uniform_Resource_Identifier" target="_blank">URI</a> in .NET. What I need to do is:<br />
+<ul>
+<li>Parse URI from a poor string to be able to extracts its parts      <br />
+<ul>
+<li>name/value pairs of a <i>query</i>; </li>
+<li>scheme </li>
+<li>host </li>
+<li>path </li>
+</ul>
+</li>
+<li>Generate URI based on      <br />
+<ul>
+<li>name/value pairs of a <i>query</i>; </li>
+<li>scheme </li>
+<li>host </li>
+<li>scheme + host parts</li>
+<li>path </li>
+</ul>
+</li>
+<li>Modify URI the same way      <br />
+<ul>
+<li>name/value pairs of a <i>query</i>; </li>
+<li>scheme </li>
+<li>host </li>
+<li>scheme + host parts</li>
+<li>path </li>
+</ul>
+</li>
+</ul>
+There are basically 2 types in .NET that can help with it: <a href="http://msdn.microsoft.com/en-us/library/system.uribuilder.aspx" target="_blank">Uri</a> and <a href="http://msdn.microsoft.com/en-us/library/system.uribuilder.aspx" target="_blank">UriBuilder</a>. Neither of them allows me to do all the things I mentioned <b><i>properly</i></b>.<br />
+Uri class does not give name/value pairs. So I have set of extensions to do that. Not a big deal, but it is not there, in .NET.<br />
+UriBuilder has a <a href="http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=96242" target="_blank">ridiculous bug</a>; and guess what. The status is Closed as by Design. WTF! Just insane!<br />
+What a shame on .NET. How long should I concatenate the strings and use my own utils when things are a bit more complicated that just absolutely simple? Sick and tired of that.<br />
+I definitely need to get my hands on some RFC and <a href="http://labs.apache.org/webarch/uri/rfc/rfc3986.html#collected-abnf" target="_blank">implement it properly</a>.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Have to agree that .NET&#39;s Uri class is dreadful, especially when it comes to handling query strings.</div>
+</div>
+</div>

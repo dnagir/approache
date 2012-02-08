@@ -1,0 +1,80 @@
+---
+layout: post
+title: "NHAML – Tips"
+date: 2009-07-08T11:06:00+10:00
+categories:
+ - nhaml
+ - Development
+---
+
+<div class='post'>
+I’ve working with NHAML for some time. I <a href="http://dnagir.blogspot.com/2009/07/nhaml-impressions.html" target="_blank">just love</a> it.<br />
+Now I want to share some issues that I have faced and how I solved them.<br />
+This is small Question/Answer list:<br />
+<hr />
+Q1: What is NHAML analogue of <br />
+<pre class="csharpcode"><span class="asp">&lt;%</span>= Html.ActionLink(<span class="str">"Home"</span>, <span class="str">"Index"</span>, <span class="str">"Home"</span>)<span class="asp">%&gt;</span></pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+A1: != Html.ActionLink("Home", "Index", "Home")<br />
+<hr />
+Q2: What is NHAML analogue of 
+  <br />
+<pre class="csharpcode"><span class="asp">&lt;%</span>= Server.HtmlEncode(Model.Name) <span class="asp">%&gt;</span></pre>
+A2: &amp;= Model.Name<br />
+<hr />
+Q3: What is analogue of<br />
+<pre class="csharpcode"><span class="kwrd">&lt;</span><span class="html">a</span> <span class="attr">href</span><span class="kwrd">='&lt;%= Html.Content().HomeLink %&gt;' target=’_blank’</span><span class="kwrd">&gt;</span>Home<span class="kwrd">&lt;/</span><span class="html">a</span><span class="kwrd">&gt;</span></pre>
+A3: More complex code should be wrapped in #{}: 
+  <br />%a { href=#{Html.Content().HomeLink} target=”_blank”} Home<br />
+BUT see Q4<br />
+<hr />
+Q4: What is analogue of<br />
+<pre class="csharpcode"><span class="kwrd">&lt;</span><span class="html">a</span> <span class="attr">href</span><span class="kwrd">='&lt;%=Model.ProductUrl %&gt;'</span> <span class="attr">target</span><span class="kwrd">='_blank'</span><span class="kwrd">&gt;</span><span class="asp">&lt;%</span>= Server.HtmlEncode(Model.ProductName) <span class="asp">%&gt;</span> <span class="kwrd">&lt;/</span><span class="html">a</span><span class="kwrd">&gt;</span></pre>
+A4: Simple code may not be wrapped in anything: 
+  <br />%a { href=Model.ProductUrl target=”_blank”} &amp;= Home<br />
+<hr />
+Q5: What is analogue of:<br />
+<pre class="csharpcode"><span class="asp">&lt;%</span> <span class="kwrd">foreach</span>(Product currentProduct <span class="kwrd">in</span> Model.Products) {<span class="asp">%&gt;</span>
+  <span class="asp">&lt;%</span> Html.RenderPartial(<span class="str">"ProductInfo"</span>, currentProduct); <span class="asp">%&gt;</span>
+<span class="asp">&lt;%</span> }; <span class="asp">%&gt;</span></pre>
+A5: Local variables (currentProduct) are available in partial views (_ProductInfo):<br />
+<pre class="csharpcode">- foreach(Product currentProduct in Model.Products)
+  _ ProductInfo</pre>
+<hr />
+Q6: What about HTML encoding?<br />
+A6: See the <a href="http://code.google.com/p/nhaml/wiki/NHamlLanguageReference" target="_blank">reference</a> for more info. Shortly: if you want to encode – use “&amp;=”, if you don’t – use “!=”.<br />
+<hr />
+Q7: Can I use WebForms View engine and NHAML?<br />
+A7: Yes. No problem with that. In fact I do it as a fallback in case something goes wrong (hope it will never happen :) ).<br />
+<hr />
+Q8: Any integration with Visual Studio<br />
+A8: At the moment I am aware of Visual Studio <a href="http://code.google.com/p/nhaml/wiki/VisualStudioPlugin" target="_blank">syntax highlighter</a> plug-in only .<br />
+<hr />
+This should be enough for now :)</div>

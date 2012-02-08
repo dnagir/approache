@@ -1,0 +1,111 @@
+---
+layout: post
+title: "Content Management/Publishing System Problems"
+date: 2009-10-24T01:20:00+11:00
+categories:
+ - Development
+ - cms
+ - frustration
+ - html
+ - css
+---
+
+<div class='post'>
+Reading the <a href="http://www.codinghorror.com/blog/archives/001306.html">Treating user Myopia</a> I remembered one thing I has been thinking about lately: the problems of all Content Management Systems.<br />
+Please note that I will be talking about Web Content Publishing which produces (as an end result) a web page represented with HTML.<br />
+<br />
+Since first CMS the bunch of issues started to arise and most of them are related to basic things:<br />
+<ol>
+<li>How user should edit the content?</li>
+<li>How the content provided by user should be represented as HTML?</li>
+</ol>
+<h4>
+
+
+Editing user content</h4>
+<div>
+The most popular options to edit the content are:</div>
+<div>
+<ol>
+<li><b>Poor HTML</b> - user can provide HTML as it is.</li>
+<li><b>Plain text</b> - the text is rendered as-as. Similar to 1, but is HTML encoded, so this is really 1-to-1 match of the text.</li>
+<li><b>Plain text with formatting</b> - user edits the plain text according to specific rules, then the text is parsed and renders as HTML.</li>
+<li><b>Rich Editing (WYSIWYG)</b> - is basically user friendly poor HTML. The main difference is that user should not know the HTML itself (with all its pros and cons).</li>
+<li><b>Preprocessed HTML</b> - this is mix of Poor HTML/Rich Editing and Plain text with formatting. The edited content is in format of HTML but reserves special markup to be parsed dynamically. (Think of ASP.NET, JSP or any other dynamic page generated on server, but provided by user)</li>
+</ol>
+<div>
+To give you an idea where each of them is used and its benefits or issues:</div>
+<div>
+<ol>
+<li><b>Poor HTML</b>&nbsp;- usually used in primitive/simple management systems. But is always (&gt;99%) used as a back-door when options 4 is available. Characteristics:</li>
+<br />
+<ol>
+<li>Very customisable (anything that can be represented with HTML can be done in this mode).</li>
+<li>Requires knowledge from the users.</li>
+<li>The actual output is 100% corresponds to the edited content.</li>
+<li>Easily overused (users can apply fonts/colors/text size etc with no actual need).</li>
+<li>Previous point leads to non-maintainable CMS itself as it is technically very hard change common layout with this approach.</li>
+<li>No way to enforce web-standards.</li>
+<li>No way to enforce common site layout rules.</li>
+</ol>
+<br />
+<li><b>Plain text.</b>&nbsp;Is actually part of any system (not only CMS). We can see that everywhere where users' input is shown on a page. It anything from Contact Us and Registration form a real CMS. Its characteristics:</li>
+<br />
+<ol>
+<li>Easy to edit.</li>
+<li>No customisation points at all. The output will always be plain text.</li>
+<li>The actual output will often be different (newlines and space in plain text are in most cases displayed as such, but just ignored by browsers).</li>
+<li>Web-standards are automatically enforced.</li>
+<li>Common site layout rules are N/A.</li>
+</ol>
+<br />
+<li><b>Plain text with formatting.</b> Is used in most of Wiki sites. Often called Markdown. The aim is to allow user to edit content in plain text, but reformat it to rich (HTML) content according to the rules of Markdown. Characteristics:</li>
+<br />
+<ol>
+<li>Requires users' knowledge of the markdown.</li>
+<li>There are a lot differen mark-ups/downs which increases learning curve for end-users overall.</li>
+<li>Really describes the content and NOT how to represent the content.</li>
+<li>Has limited customisation. Only set of particular HTML tags can be rendered as a result.</li>
+<li>Easy to enforce web-standards.</li>
+<li>Easy to enforce common site layout rules.</li>
+</ol>
+<br />
+<li><b>Rich Editing (WYSIWYG).</b>&nbsp;The aim is to provide users ability to edit content and see how it looks just in place. What You See Is What you get. Used in most of CMS systems, blogs, forums etc where there is a requirement to publish something better than just a plain text. Considered to be the must-have option and is a de-facto standard for content publishing these days. Characteristics (some inherited from Poor HTML):</li>
+<br />
+<ol>
+<li>Very customisable.</li>
+<li>Does not requires knowledge from the users (easy to use).</li>
+<li>The actual output in most cases is &gt; 90% similar to the edited content (which is pretty good).</li>
+<li>Easily overused (users can apply fonts/colors/text size etc with no actual need).</li>
+<li>Previous point leads to non-maintainable CMS itself as it is technically very hard change common layout with this approach.</li>
+<li>Issues with the editors.</li>
+<li>No way to enforce web-standards.</li>
+<li>No way to enforce common site layout rules.</li>
+<li>Copy-paste from other documents is very buggy.</li>
+</ol>
+<br />
+<li><b>Preprocessed HTML/MarkDown</b>&nbsp;- this can used in systems that dynamically build online forms or are in some way application builders. The idea is to allow user to provide a content but still make it dynamic. Usually used in pretty complex applications. Typical example I can take from top of my head is <a href="http://www.mindtouch.com/">DekiWiki</a>. Characteristics:</li>
+<br />
+<ol>
+<li>Requires knowledge of the markup.</li>
+<li>Customisation points are limited.</li>
+<li>Content is always mixed with dynamic&nbsp;behavior&nbsp;which leads to painful&nbsp;maintainability.</li>
+<li>The actual output is often totally different comparing to the original content.</li>
+<li>No way to enforce web-standards.</li>
+<li>No way to enforce common site layout rules.</li>
+</ol>
+</ol>
+</div>
+<div>
+Probably, the Rich Editor is the golden middle here. But the things go wrong when people try to copy-paste content (very rich-formatted), let's say, from MS Word. Hardly any WYSIWYG editor can handle that. And the result output will be awful. Forget about web standards....</div>
+<div>
+<br /></div>
+<div>
+The point I want to make here is that there is no unique option for all possible solutions. If you create a system for geeks - use mardown, for normal users - use Rich Editor and be prepared to review its content.</div>
+<div>
+<br /></div>
+<div>
+But generally, I feel there is a lack of science behind this. We need to analyse this area to provide a good solution for both users and developers, so they can live happy lives and not bother writing posts like the&nbsp;<a href="http://www.codinghorror.com/blog/archives/001306.html">Treating user Myopia</a>.</div>
+</div>
+<br />
+For any ideas on how to solve this publishing issue I promise beer.</div>

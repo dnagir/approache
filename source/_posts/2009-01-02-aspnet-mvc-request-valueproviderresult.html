@@ -1,0 +1,39 @@
+---
+layout: post
+title: "ASP.NET MVC Request  ValueProviderResult: AttemptedValue or RawValue"
+date: 2009-01-02T14:21:00+11:00
+categories:
+ - tricks
+ - Development
+ - asp.net mvc
+---
+
+<div class='post'>
+I want to write a small helper to obtain an object from the request. Nothing special except to note that there are <span style="font-family: Courier New;">AttemptedValue</span> and <span style="font-family: Courier New;">RawValue</span> properties of <span style="font-family: Courier New;">ValueProviderResult</span>. Which one should I use for this helper keeping in mind that an ID of an object is always a string. Let's see what these props are:<br />
+<ul>
+<li><span style="font-family: Courier New;">RawValue</span> - first of all this is not always a string.</li>
+<br />
+<ul>
+<li>If it comes from RouteData it can be something else (int).</li>
+<li>If it comes from <span style="font-family: Courier New;">Request.Form</span> - it may be array of something (ints).</li>
+</ul>
+<br />
+<li><span style="font-family: Courier New;">AttemptedValue</span> - is just a RawData converted to string using (<span style="font-family: Courier New;">Convert.ToString</span> with culture info). <b>But</b> in case it is obtained from <span style="font-family: Courier New;">Request.Form</span> it is just a poor value of the posted data.</li>
+</ul>
+So just keep it in mind. For my purpose using <span style="font-family: Courier New;">AttemptedValue</span> looks a bit more logical, so here's the method on my controller:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;">TObject GetObjectFromRequest&lt;TObject&gt;(<span style="color: blue;">string</span> name) <span style="color: blue;">where</span> TObject: <span style="color: blue;">class</span>, ILoopBack {
+    var vpr = ValueProvider.GetValue(name);
+    <span style="color: blue;">if</span> (vpr == <span style="color: blue;">null</span>)
+        <span style="color: blue;">return</span> <span style="color: blue;">null</span>;
+    <span style="color: blue;">return</span> WorkSpace.GetObject&lt;TObject&gt;(vpr.AttemptedValue);
+}</pre>
+</div>
+<br />
+Usage sample:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">public</span> ActionResult DoSomething(MyObject obj) {
+  obj.Parent = GetObjectFromRequest&lt;MyParentObject&gt;(<span style="color: #006080;">"parent"</span>);
+  <span style="color: blue;">return</span> View(); <span style="color: green;">// Or whatever</span>
+}</pre>
+</div></div>

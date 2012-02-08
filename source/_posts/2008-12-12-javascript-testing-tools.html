@@ -1,0 +1,41 @@
+---
+layout: post
+title: "JavaScript Testing Tools"
+date: 2008-12-12T10:34:00+11:00
+categories:
+ - javascript
+ - rhino-unit
+ - DevTools
+ - selenium
+ - js-unit
+---
+
+<div class='post'>
+For now just a list. Maybe later I'll update this:<br />
+<ul>
+<li><a href="http://jsunittest.com/">JsUnitTest</a> (MIT) - based on unittest.js from <a href="http://prototypejs.org/">prototypejs</a>, but not depend on it.</li>
+<li><a href="http://www.jsunit.net/">JsUnit</a> (GPL, LGPL, MPL) - essential port of JUnit..</li>
+<li><a href="http://developer.yahoo.com/yui/yuitest/">YUI Test</a> (BSD) - YUI Based. Not a port from xUnit.</li>
+<li><a href="http://www.thefrontside.net/crosscheck">CrossCheck</a> (Licence?) - in-browser testing. Code will run in many different browsers, but without needing installations of those browsers (requires JVM ).</li>
+<li><a href="http://seleniumhq.org/">Selenium</a> (Apache 2) - in-browser web application testing (simulates user actions).</li>
+<li><a href="http://code.google.com/p/js-unit-testing/">Js-Unit-Testing</a> (MIT)</li>
+<li><a href="http://code.google.com/p/rhinounit/">RhinoUnit</a> (BSD)</li>
+</ul>
+Also the <a href="http://www.testdrivenjavascript.com/">TestDrivenJavascript</a> has some useful info.<br />
+Not sure if I need to put my opinion here about all of these tools, but I will :)<br />
+<br />
+I'm very <a href="http://www.movesonrails.com/articles/2008/03/04/javascript-testing-problems">sceptic</a> about <i>Crosscheck</i>. Why should we introduce a browser simulator to test behaviour in a real browser. We just cannot rely on such tests.<br />
+Not sure about JsUnitTest, Js-Unit-Testing and RhinoUnit. For me there are obvious leaders in this list: <i>YUI Testing</i>, <i>JsUnit</i> for unit testing and <i>Selenium </i>(better for acceptance tests).</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Selenium itself is based on JS and is intended to simulate user actions and verify the result.<BR/><BR/>As it's based on JS and uses browser DOM and is executed inside a browser, you can easily add your own extensions to it via JavaScript. But the purpose of Selenium is not to do unit testing, but rather acceptance testing.</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+Does selenium allow js testing yet? Did you try using it? <BR/><BR/>I'm just asking because selenium I have seen before ( 3 yr ago ) was only capable of sending/recieving some http data, thus unable to work js testing out.</div>
+</div>
+</div>

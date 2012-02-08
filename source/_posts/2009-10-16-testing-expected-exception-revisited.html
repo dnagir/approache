@@ -1,0 +1,122 @@
+---
+layout: post
+title: "Testing expected exception, revisited"
+date: 2009-10-16T14:40:00+11:00
+categories:
+ - Development
+ - .net
+ - testing
+ - nunit
+---
+
+<div class='post'>
+I have been using NUnit for a long time and really got used to it. Nowadays it is very sweet, especially with NUnitEx.<br />
+It does have a simple syntax for testing exception. Pretty much <a href="http://dnagir.blogspot.com/2008/05/unit-test-granular-expected-exception.html" target="_blank">what I did</a> long time ago.<br />
+It looks like this:<br />
+<pre class="csharpcode">[Test]
+<span class="kwrd">public</span> <span class="kwrd">void</span> ThrowsAndGivesMessage() {
+    Assert.Throws&lt;FormModelProviderException&gt;(() =&gt; <span class="kwrd">new</span> XmlFormModelProvider().CreateModel());
+}</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>BUT, it does not allow me to <i><b>verify the actual message</b></i> of the exception. I want to write the code like this to do that:<br />
+<pre class="csharpcode">[Test]
+<span class="kwrd">public</span> <span class="kwrd">void</span> ThrowsAndGivesMessage() {
+    Action act = () =&gt; <span class="kwrd">new</span> XmlFormModelProvider().CreateModel();
+    act.Throws&lt;FormModelProviderException&gt;()
+        .Message
+        .Should().Contain(<span class="str">"Form/Form element is not found"</span>);
+}</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+The point here is that I <i><b>verify the exception type</b></i> thrown AND get the <i><b>TYPED exception as the result</b></i> of the verification so I can do whatever I want with it. One more thing I like is that we explicitly see the <b><i>acting code</i></b>.<br />
+Ohh, yes. The code to support this:<br />
+<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">static</span> TExpected Throws&lt;TExpected&gt;(<span class="kwrd">this</span> Action a) <span class="kwrd">where</span> TExpected : Exception {
+    <span class="kwrd">try</span> {
+        a.Invoke();
+    } <span class="kwrd">catch</span> (TExpected expected) {
+        <span class="kwrd">return</span> expected;     
+    } <span class="kwrd">catch</span> (Exception other) {
+        Assert.Fail(<span class="kwrd">string</span>.Format(<span class="str">"Expected exception of type {0} but {1} was raised."</span>, <span class="kwrd">typeof</span>(TExpected).Name, other.GetType().Name));
+    }
+    Assert.Fail(<span class="kwrd">string</span>.Format(<span class="str">"The expected exception {0} has not been raised"</span>, <span class="kwrd">typeof</span>(TExpected).Name));
+    <span class="kwrd">return</span> <span class="kwrd">null</span>; <span class="rem">// This NULL smells - should be refactored :)</span>
+}</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+Enjoy.</div>

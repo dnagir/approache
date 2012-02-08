@@ -1,0 +1,60 @@
+---
+layout: post
+title: "Overcoming unavailable RAISERROR in UDF"
+date: 2009-06-23T17:50:00+10:00
+categories:
+ - sql
+ - Development
+---
+
+<div class='post'>
+If you want to indicate an error from UDF first thing you will try (SQL Server) is:<br />
+<pre class="csharpcode">RAISERROR(<span class="str">'Invalid argument for MyUDF'</span>, 16, 1)</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+BUT, this won't work and you will get an error:<br />
+<code>Invalid use of 'RAISEERROR' within a function.</code> 
+
+<br />
+<br />
+This is disappointing (also mention the misspelled RAISE<b>E</b>RROR in the message).<br />
+Searching the can bring alternatives.<br />
+The simplest one is division by zero:<br />
+<pre class="csharpcode"><span class="kwrd">SELECT</span> 1/0</pre>
+With this people will remember you for a long time (and not from a good side). PLEASE DO NOT DO IT FOR GOD’S SAKE.<br />
+<br />
+I choose the one below. It at least allows me to include the error message:<br />
+<pre class="csharpcode"><span class="kwrd">SET</span> @<span class="kwrd">dummy</span> = (<span class="kwrd">SELECT</span> <span class="kwrd">CAST</span>((<span class="str">'Invalid argument for MyUDF'</span>) <span class="kwrd">AS</span> <span class="kwrd">INT</span>))</pre>
+And will give error message:<br />
+<code>Syntax error converting the varchar value 'Invalid argument for MyUDF' to a column of data type int.</code> 
+
+<br />
+<br />
+Better than division by zero and definitely better than nothing.<br />
+Hope this helps.</div>

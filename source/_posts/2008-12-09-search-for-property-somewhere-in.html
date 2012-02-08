@@ -1,0 +1,33 @@
+---
+layout: post
+title: "Search for a property somewhere in JavaScript"
+date: 2008-12-09T14:07:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>I know the part of the property name in some JS object, but have no idea in what object this property is located.</p>  <p>So I wrote ridiculous script to find it for me. Just a lazzy developer. Please don't use anything like that in production.</p>  <div>   <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none"><span style="color: #0000ff">var</span> findPropertyCompare=<span style="color: #0000ff">function</span>(srch, existing) {
+ <span style="color: #0000ff">return</span> existing.toString().indexOf(srch) &gt;= 0;
+}
+
+<span style="color: #0000ff">var</span> findProperty=<span style="color: #0000ff">function</span>(n, root, path, depth) {
+  depth = depth || 0;
+  <span style="color: #0000ff">if</span> (depth &lt;= 5) {
+    <span style="color: #0000ff">for</span>(<span style="color: #0000ff">var</span> key <span style="color: #0000ff">in</span> root) {
+      <span style="color: #0000ff">if</span> (findPropertyCompare(n, key)) {
+        console.info(<span style="color: #006080">&quot;Found %s = %o&quot;</span>, path + <span style="color: #006080">'.'</span> + key, root[key]);
+      }
+      findProperty(n, root[key], path + <span style="color: #006080">'.'</span> + key, depth+1);
+    }
+  }
+};
+
+findProperty(<span style="color: #006080">'FCK'</span>, window, <span style="color: #006080">'window'</span>);</pre>
+</div>
+
+<p>&#160;</p>
+
+<p>It just outputs all the properties that contain 'FCK'. Of course it only works in FF because of console object is used. Also it doesn't handle exceptions that may occur (and will occur).</p>
+
+<p>But anyway, still useful.</p>  </div>

@@ -1,0 +1,76 @@
+---
+layout: post
+title: "ASP.NET MVC Most annoying issues"
+date: 2009-09-29T13:16:00+10:00
+categories:
+ - Development
+ - DevTools
+ - frustration
+ - asp.net mvc
+---
+
+<div class='post'>
+<ul>
+<li>No support for SSL in routing&nbsp; (no URL generation configured in a single place). One big hack is <a href="http://dnagir.blogspot.com/2008/08/fixing-https-support-in-aspnet-mvc.html">here</a>.</li>
+<li>No support for (non)SSL redirect using RedirectToRoute (so it is not possible to redirect to (non)SSL page from controller action, except generating absolute link manually). </li>
+<li>HttpExeption is handled as any other one except if its Code is 404. Inconsistent. But is “as designed” in ASP.NET generally (FTW again). </li>
+<li>It reuses interface of the HttpContext class just acting as a proxy (HttpContextBase). Thus it inherits all the issues it has. It had to be different interface that abstracts from HttpContext (in particular the ApplicationPath’s trailing slash issue). </li>
+<li>No support for Fragment part of URL in routing. </li>
+<li>Weird ValueProvider – sometimes its value is array, sometimes string. The <a href="http://dnagir.blogspot.com/2009/01/aspnet-mvc-request-valueproviderresult.html">behaviour is consistent</a>, but not naturally understandable. Have to wrap all that stuff with my own utility to unwrap that. </li>
+<li><a href="http://dnagir.blogspot.com/2009/04/nullreferenceexception-accessing-aspnet.html">NullReferenceException occurs</a> accessing routes if not properly used. </li>
+<li>Annoying RenderPartial with model. <a href="http://dnagir.blogspot.com/2009/05/aspnet-mvc-renderpartial-with-null.html">Has to create a new ViewDataDictionary</a>. </li>
+<li><a href="http://dnagir.blogspot.com/2009/09/aspnet-mvc-empty-values-and-string.html">Empty values are used instead of NULLs</a>. By default if user leaves a field blank (non-mandatory) empty string is bound to the property. It will be fixed in MVC2. </li>
+<li>In <b>reality</b>, rarely you can use the typed C# 3.5 syntax for routing MvcContrib fixes that and I <a href="http://dnagir.blogspot.com/2008/05/annoying-untyped-redirects-in-aspnet.html">did</a> it. </li>
+<li>The default data binding <a href="http://dnagir.blogspot.com/2008/03/mvc-concerns-databinding-and-security.html">is NOT secure</a> and it is often encouraged. This also applies to Castle MonoRail. To protect it we need to specify white-list (which leads to another problem) or use ViewModel/DTO (which I do) and thus write more code. </li>
+<li>The white-list of databinding properties is array of STRINGS. No type sefety. I write my wrapper to convert Expression&lt;Func&gt; to string. Fixing and patching again. </li>
+</ul>
+And this is the list I only remember now…<br />
+Generally the idea behind ASP.NET MVC is great. Even <a href="http://dnagir.blogspot.com/2008/03/mvc-controller-action-return-values.html">one of my ideas had been implemented</a> in it.<br />
+But the delivered implementation has to be patched and wrapped with your own utils. Only after that it can be used consistently.<br />
+I am using ASP.NET MVC for about half a year or so and I still do prefer it instead of WebForms. Probably I just had to choose <a href="http://www.castleproject.org/MonoRail/" target="_blank">Castle MonoRail</a>. I have never used it, only looked around, read blogs and looked into code samples, but it seems to be a bit more mature. It probably has less “features” (one is worth noting - routing), but I believe it at least performs consistently everywhere.<br />
+I am just so tired of patching, wrapping, extending, fixing all the Microsoft things…<br />
+I probably just need to go to holidays for a while to cool down a bit.<br />
+I should also mention the most positive tools I used with ASP.NET MVC:<br />
+<ul>
+<li><a href="http://www.codeplex.com/MVCContrib/Wiki/View.aspx?title=Grid" target="_blank">MvcContrib’s grid</a>. </li>
+<li><a href="http://code.google.com/p/nhaml/" target="_blank">NHAML</a> view engine – this is a real relief. I don't even need the previous “tool” with it. Such a <i>times and mood</i> saver. It sill has some things I am missing heavily:       <br />
+<ul>
+<li><a href="http://code.google.com/p/nhaml/issues/detail?id=56" target="_blank">parameterised partial</a> views; </li>
+<li><a href="http://code.google.com/p/nhaml/issues/detail?id=5" target="_blank">multiple content placeholders</a>; </li>
+<li>intellisence support; </li>
+</ul>
+</li>
+</ul>
+<b>I do encourage you to contribute to NHAMl in any possible way. </b><a href="http://dnagir.blogspot.com/2009/07/nhaml-impressions.html"><b>That is a real thing</b></a><b>.</b><br />
+<hr />
+<b>Ohh. And I have a great idea. Let’s rewrite all the tools we find <i>design </i>issues in? Huh?</b><br />
+Are you brave enough to tell that?<br />
+…hmm… <i>I</i> am probably <i>not</i>.     <br />Though I want to.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>ds r4</div>
+<div class='content'>
+that SSL certification problem is such annoying. It gets problemetic even if you change the browser.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Upps. Sorry. I really thought fragment IS sent to server as part of the URL.<br /><br />Well, then there is really no way we can get the fragment on the server. But it should still be possible to generate the fragment so it can be used on the client.</div>
+</div>
+<div class='comment'>
+<div class='author'>Haacked</div>
+<div class='content'>
+That&#39;s not the case at all. Try the following experiment. Open up Fiddler2. In your browser, type in any URL with a URL fragment. For example, I chose http://haacked.com/default.aspx#foo<br /><br />Fiddler shows the following request being made:<br /><br />  GET /default.aspx HTTP/1.1<br /><br />Notice that #foo is not included as part of the request.<br /><br />Check out the Wikipedia entry on &quot;Fragment identifier&quot; which states: http://en.wikipedia.org/wiki/Fragment_identifier<br /><br />&quot;The fragment identifier functions differently than the rest of the URI: namely, its processing is exclusively client-side with no participation from the server.&quot;</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Hello Phil,<br /><br />For the Fragment, it is part of the URL and is sent to the server and thus can be used. Not too sure what you mean.<br /><br />Ideally the the fragment part shuold be defined as part of the route:<br />&quot;{controller}/{id}/{action}#{fragment}&quot;<br /><br />So the &#39;#&#39; should be taken into account when it is absent when matching/generating routes. So that all of the follwoing URL will match the route:<br />Product/123/List<br />Product/123/List#actions<br />Product/123/List?page=5#actions</div>
+</div>
+<div class='comment'>
+<div class='author'>Haacked</div>
+<div class='content'>
+Thanks for the feedback. Regarding the Fragment part in URL Routing, how could we support that? The URL fragment is *not sent to the server*. <br /><br />The fragment is interpreted by the browser and is not sent over HTTP to the server.</div>
+</div>
+</div>

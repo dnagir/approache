@@ -1,0 +1,62 @@
+---
+layout: post
+title: "Migrating Eco3 to Eco5"
+date: 2009-08-12T16:50:00+10:00
+categories:
+ - Development
+ - upgrade
+ - eco
+---
+
+<div class='post'>
+Just sharing my experience migrating large project (~170 classes in Business Objects ONLY) from Eco3 (Borland C# Builder and Together Modeler) to <a href="http://capableobjects.com/" target="_blank">Eco5</a>. <br />
+This outlines the problems I faced, I don't want to dig into details and try to reproduce each case as I have had enough pain already. I also don’t care if it is <i>by-design</i>. I would describe the process not <i>the migration</i> but <i>the copy-pasting</i>.<br />
+<ol>
+<li>Code is not migrated. THE MOST of time is wasted doing copy-paste (in best case). </li>
+<li>Interfaces are not migrated (so I have to put all the interfaces back and because of 1 implement them). </li>
+<li>One-to-many association names are not preserved and default names are used. Breaks code. And no it is not even cross-package references. The association links 2 classes from same package on the same diagram. </li>
+<li>Some associations are not imported at all. </li>
+<li>The import process <i><b>added attributes</b></i> to classes that do not belong there. It definitely breaks runtime as mapping will not contain them (and yes, I discovered it later). </li>
+<li>The import does not preserve IsNavigable for some associations. </li>
+<li>Wrong migration of attributes in large hierarchy: the attribute in the middle of hierarchy has been put into its parent. </li>
+<li>Import the same package twice gives very weird result: it duplicates all TaggedValues, Constraints, and <b>method parameters </b>(not methods)! Better it said me that the package already imported and did nothing as I had to manually correct everything. </li>
+<li>The EcoSpace had to be reconfigured from scratch as there are too many changes from Borland.* to Eco.*. </li>
+<li>Ordered value for associations is not preserved in some case (discover very late when could not make couple of tests pass). </li>
+</ol>
+I spent more than one and a half day for all that and now I can compile my model <b>AND</b> tests project. I still have some things marked with ObsoleteAttribute, but I’ll get to it later as I will be doing refactorings.<br />
+The issues I have faced making all my tests to pass (related to ECO only):<br />
+<ol>
+<li>I cannot longer use custom class as type of an attribute (custom Money class). <b>This is a real showstopper</b>. Why newer version supports LESS! I had to use Decimal instead of custom class.&nbsp; <br /><span style="font-family: Courier New;">Attribute ClassName.TotalCostsAmount has an invalid type: Shared.Money. Only arrays, enums, strings and valuetypes are allowed</span> </li>
+<li><strike>Significant </strike>OCL syntax changes that <b>breaks the runtime</b>. It cannot be detected at compile time as OCL is just a string. <strike>Best example:&nbsp; “<span style="font-family: Courier New;">self.Name-&gt;trim(true, true).length &gt; 0</span>”. which trims the string on both sides (indicated by boolean parameters). Now it should use normal .NET Trim method: “<span style="font-family: Courier New;">self.Name.Trim().length &gt; 0</span>”.</strike>&nbsp; (I missed to install my trim OCL operation).</li>
+<li>HasUserCode on associations is not available. That was simple way of doing things (thou you have to prohibit explicitly other ways of changing associations). Now I have to implement <a href="http://www.capableobjects.com/apps/InstantForum414/FindPost3798.aspx" target="_blank">ISingleLinkCatcher</a>. Much better in terms of functionality but much worse in terms of maintenance. </li>
+<li>The <a href="http://magpie.no-ip.com/mantis/view.php?id=524" target="_blank">bug</a> is still not fixed (derived attribute that uses externalId is not invalidate if it changes).</li>
+<li>The <a href="http://magpie.no-ip.com/mantis/view.php?id=523" target="_blank">logging</a> has not been improved.</li>
+</ol>
+Usability issues on with the UML designer<br />
+<ol>
+<li>Cannot specify additional namespaces to be used for the whole package (so I have to go through every class). </li>
+<li>Code generation takes a lot of time for simple change (2 minutes). It is related to the migration as during this process I often have to regenerate code and it just kills my time. </li>
+<li>Cannot select MANY objects (properties, methods, associations) and change values for all of them. Instead have to go one by one (Don’t tell me I have to use the AutoForm!). </li>
+<li>Sometimes the Modelr just freezes. It SHOWS the model but it is READ-ONLY. I cannot even select anything on it. VS restart helps. </li>
+<li>Cannot search class <b>on the diagram</b> (“select as you type” kind of thing). There is search for the whole model but not on a single diagram.</li>
+</ol>
+<br />
+<h4>
+The outcome</h4>
+<ul>
+<li>About 12 hours to migrate the model and compile project. </li>
+<li>About 4 (16 in total) hours to make ~40% of tests to pass. </li>
+<li>About 4 (20 in total) hours to make ~90% of tests to pass. </li>
+<li>About 2 (22 in total) hours to make all tests to pass EXCEPT ONE. </li>
+<li>About 2 (24 in total) hours to make the last test to pass (related to the fact that I no longer use the Database for unit testing). </li>
+</ul>
+<h4>
+Breathing out</h4>
+At the moment of writing this I have my new ECO5 business objects and all the tests working.<br />
+The migration process has not yet finished for the application in total but the major step is done and I can tell that I am happy with the overall result despite some frustrations.<br />
+The biggest frustration is that I had to copy-paste old code to new objects. It probably took at least 80% of my time.<br />
+Next thing is to migrate small WinForms utility. Will see how I go with it.<br />
+<h4>
+Last Note for those who does not want to write unit tests</h4>
+It took me 3 working days to migrate all my system core with tests. Additionally tests were just a healthiness indicator. I am confident that without unit tests it would take at least one-two weeks in best case scenario.<br />
+So guys: “"Stressed? Write a test!”.</div>

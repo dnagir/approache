@@ -1,0 +1,79 @@
+---
+layout: post
+title: "NDepend"
+date: 2009-05-12T16:53:00+10:00
+categories:
+ - Development
+ - DevTools
+ - ndepend
+---
+
+<div class='post'>
+<a href="http://www.ndepend.com/" target="_blank">NDepend</a> is <br />
+<blockquote>
+a tool that simplifies managing a complex .NET code base. Architects and developers can analyze code structure, specify design rules, plan massive refactoring, do effective code reviews and master evolution by comparing different versions of the code.</blockquote>
+Very interesting tool with a lot of <i><a href="http://www.ndepend.com/Features.aspx" target="_blank">you can do this and that</a></i>.<br />
+<br />
+It has just helped me to solve one issue. In my project I should never use DateTime.Now and DateTime.Today because of testability issues.<br />
+So I’ve decided to check if I haven’t missed to use my time accessor instead of static DateTime.Now and DateTime.Today. And it turns out there is ONE entry of it that I have never mentioned (and it obviously hasn’t been included in my tests set).<br />
+I’ve done it spending no more than couple of minutes to figure out how to write CQL (the NDepend Code Query Language):<br />
+<pre class="csharpcode"><span class="kwrd">SELECT</span> METHODS <span class="kwrd">FROM</span> ASSEMBLIES "MyCompany.MyProject.BusinessObjects" <span class="kwrd">WHERE</span> IsUsing "System.DateTime.get_Now()" <span class="kwrd">OR</span> IsUsing "System.DateTime.get_Today()"</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+<br />
+Then I also decided to have a look I have no types that start with underscore. Yeah, I renamed some of them to that in case I’ll need. I’d better delete them.<br />
+Anyway, here’s the query for it:<br />
+<pre class="csharpcode"><span class="kwrd">SELECT</span> TYPES <span class="kwrd">FROM</span> ASSEMBLIES "MyCompany.MyProject.WebGUI" <span class="kwrd">WHERE</span> NameLike "^_" </pre>
+And I spot that guy. This ant was living in the compiled assembly.<br />
+<br />
+Then I couldn’t stop. I wanted to know which methods are using Eco3 framework (previously partially owned by Borland):<br />
+<pre class="csharpcode"><span class="kwrd">SELECT</span> METHODS <span class="kwrd">FROM</span> ASSEMBLIES "MyCompany.MyProject.WebGUI" <span class="kwrd">WHERE</span> IsUsing "Borland.Eco.*"</pre>
+<br />
+And I got ONE (huh, that’s good because of I plan to migrate from Eco3 to Eco5).<br />
+Then I remembered that I have references to my old assembly (Common) everywhere and I will have to migrate from it as well, so the query is simple:<br />
+<pre class="csharpcode"><span class="kwrd">SELECT</span> METHODS <span class="kwrd">FROM</span> ASSEMBLIES "MyCompany.MyProject.WebGUI" <span class="kwrd">WHERE</span> IsUsing "MyCompany.Common.EcoUtils"</pre>
+and I got about 1629 references.<br />
+So now <b>I know</b> I have to consider to keep backward compatibility in my Common assembly.<br />
+<br />
+And there are so many things you can do with NDepend! You can even get lost executing different queries against your project and sometimes be surprised.<br />
+Using simple NDepend’s Search I found that I have class with IL Cyclomatic Complexity equal to <b>317!</b> Guess what kind of class it is?..<br />
+Correct, it’s called Utils and has tons of static helper methods. This animal must be refactored.<br />
+<br />
+Next thing I wanted to count number of my BusinessObjects created by ECO Framework (actual pages) in my project. That’s simple:<br />
+<pre class="csharpcode"><span class="kwrd">SELECT</span> TYPES <span class="kwrd">FROM</span> ASSEMBLIES "MyCompany.MyProject.BusinessObjects" <span class="kwrd">WHERE</span> Implement "Borland.Eco.ObjectImplementation.ILoopBack"</pre>
+and the answer was 85.<br />
+<br />
+And this is non-stop process when playing with your code and NDepend…<br />
+<br />
+And the other nice thing is that I can create warnings for myself, for example, I want NDepend to notify me about using System.DateTime.Now. So I can create a warning and automatically get the notification:<br />
+<pre class="csharpcode">WARN <span class="kwrd">Count</span> &gt; 0
+<span class="kwrd">IN</span>
+<span class="kwrd">SELECT</span> METHODS <span class="kwrd">FROM</span> ASSEMBLIES "MyCompany.MyProject.BusinessObjects" <span class="kwrd">WHERE</span> IsUsing "System.DateTime.get_Now()" <span class="kwrd">OR</span> IsUsing "System.DateTime.get_Today()"</pre>
+That is really useful. Abilities of NDepend are really awesome.<br />
+But before digging deeper don’t forget to consult the <a href="http://www.ndepend.com/CQL.htm" target="_blank">CQL Specification</a>.</div>

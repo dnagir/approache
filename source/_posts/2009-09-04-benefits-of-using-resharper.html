@@ -1,0 +1,104 @@
+---
+layout: post
+title: "Benefits of using ReSharper"
+date: 2009-09-04T12:43:00+10:00
+categories:
+ - coderush
+ - Development
+ - DevTools
+ - resharper
+---
+
+<div class='post'>
+Please do not laugh at me now after reading the next sentence. I am <i><b>evaluating</b></i> the <a href="http://www.jetbrains.com/resharper/" target="_blank">ReSharper</a> now.&nbsp; I should do it years ago as I have always been aware of it, but just didn’t get my hands on to it. I tried <a href="http://www.devexpress.com/Products/Visual_Studio_Add-in/Coding_Assistance/" target="_blank">CodeRush and Refactor!</a> from DevExpress too. I must admin these tools do not read your mind, but are doing a great job FOR you.<br />
+What I liked in DevExpress CodeRush+Refactor! is its fun visualisations and code complexity shown. Refactorings are great as well.<br />
+But, ReSharper aims to help you with coding more than just showing some information about it (though it does it too).<br />
+Additionally, CodeRush has great support for expandable shortcuts, lets calls it consistently – Live Templates. There are thousands of them in CodeRush. But honestly saying I dont use it as much. Visual Studio templates in 99.99% of cases do the job for me. I have to mention that ReSharper does support its own live templates and tries to make it smart (at least by providing sensible defaults).<br />
+While I haven’t had intention to compare Refactor! vs ReSharper, I would say “<i>DevExpress’ product adds fun to coding, while ReSharper adds quality to coding</i>”. Many can disagree and have the right for that.<br />
+So here is the small list the ReSharper benefits me with:<br />
+<ol>
+<li>Run your unit-test from IDE (Not only MsTest but other common ones too). </li>
+<li>Clean-up the code in the whole file using different strategies. The code looks much better after that. </li>
+<li>Automatically include file header (I have to put copyright notice, so it saves my time). </li>
+<li>It easily removes redundant using statements. </li>
+<li>It automatically adds using statements for extension methods or anything that is not yet available. This one I just love. Here is the scenario:      <br />
+<ol>
+<li>You have an IEnumerable&lt;Something&gt; list; in a new file. </li>
+<li>You type list.Where(); </li>
+<li>ReSharper suggests: “Use method System.Linq.IEnumerable&lt;Something&gt;.Where”. </li>
+<li>You hit enter and it’s done. </li>
+<li>It suggest to rename file to match the class name. </li>
+</ol>
+</li>
+<li>It warns (I changed it to ‘suggest’) to move class to the namespace according to the location on the file system. </li>
+<li>It automatically highlights possible NullReferenceExceptions. </li>
+<li>It validates the names of classes, methods, properties etc thus enforcing the consistency and guidelines. Not only it validates, but with one hit of Enter it renames it accordingly. </li>
+<li>It warns about unused parameters. It saves my time so I don’t have to debug for hours to spot the parameter is never used and the actual value is hardcoded instead. </li>
+<li>It selects current file in the solution explorer (don’t know why VS still doesn’t do it). </li>
+<li>Live templates are very smart. </li>
+<li>Easily reorder members using Ctrl-Alt-Shift and arrows. </li>
+<li>It shows NotImplementedExceptions in case you forgot something and have no test for it </li>
+<li>Shows great list of notes, todos, bug-notes etc extracted from your code and organised in a single window. </li>
+<li>And lots of other things I forgot to mention… </li>
+</ol>
+I also started to use a new word together with <i><b>refactoring</b></i>… and it is… <i><b>resharping</b></i>.<br />
+Additionally I have to mention that while evaluating ReSharper I migrated large project from .NET 1.1 and Borland Developer Studio 2006 to .NET 3.5 and Visual Studio 2008 (including all of its related assemblies). ReSharper definitely saved me at least 20-40% of time during this not the most pleasant process.<br />
+The biggest disadvantages I can see using ReSharper for now is that it slows down the IDE, increases memory consumption, especially on a large solution. But I can pay price easily for all the benefits.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Ok. I got a <a href="http://www.devexpress.com/Support/Center/p/Q230483.aspx" rel="nofollow">reply from the DevExpress</a> about the licensing. Posting here to remove all the possible speculations.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+DAS,<br /><br />You do not install a new product. You possibly install a new version of the product. But I doubt even that because I don&#39;t believe DevExpress releases a new version each month.<br /><br />Anyway, You are right this went off-topic. <br /><br />It would be interesting to see Refactor! Pro features you find the most useful on a daily basis.</div>
+</div>
+<div class='comment'>
+<div class='author'>DAS</div>
+<div class='content'>
+I don&#39;t see the point  to continue the discussion about the licensing, because it&#39;s out of this topic. <br /><br />I read the license agreement and I didn&#39;t find that I break it, because I cannot download  the same SOFTWARE PRODUCT(S), I always uninstall it, before installing a NEw one, which has new features and bugs which I have to evaluate...<br />I will defently buy it if they change the EULA.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+I don&#39;t really understant what the disadvantage of ReSharper is in terms of licensing.<br /><br />You can evaluate Refactor! for, technically, unlimited time, but it violates the law and you still have to buy it (see below). The price is higher then ReSharper&#39;s one.<br /><br />On the other hand I can evaluate ReSharper for 30 days. And I recently asked to evaluate it for another month with no problem.<br /><br />So generally you can evaluate ReSharper for the period enough for you to decide.<br /><br />It is basicly same as Refactor! but still for the lower price.<br /><br />Once again, the Refactor! can be used for free ONLY for the <b>evaluation</b> purposes (as the <a href="http://www.devexpress.com/Support/EULAs/RefactorPro.xml" rel="nofollow">license clearly states that</a>).<br /><br />Also please pay attention that Refactor! Pro evaluation license is also valid for only 30 days:<br /><i><br />If the SOFTWARE PRODUCT(S) you have obtained is marked as a &quot;TRIAL&quot; or &quot;EVALUATION,&quot; you may install one copy of the SOFTWARE PRODUCT(S) for testing purposes for a period of 30 calendar days from the date of installation (&quot;Evaluation Period&quot;). Upon expiration of the Evaluation Period, the SOFTWARE PRODUCT(S) must be uninstalled and all copies destroyed.<br /></i></div>
+</div>
+<div class='comment'>
+<div class='author'>DAS</div>
+<div class='content'>
+This comment has been removed by the author.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+DAS,<br /><br />1. I told cannot <b>agree more</b>. Read again.<br />2. Well, you told you don&#39;t have to buy it. I assume in this case you are using it for free. Let&#39;s not play the words :)</div>
+</div>
+<div class='comment'>
+<div class='author'>DAS</div>
+<div class='content'>
+This comment has been removed by the author.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+DAS,<br />Cannot agree more about Refactoring tools and code snippets.<br />But sometimes the codesnippets just get overused and that was the Alexander&#39;s point.<br /><br />As for the CodeRush, you DO have to buy it. It is NOT a free product. It is only free to evaluate. If you evaluate the product for couple of years (when in fact you just use the product) I believe you break their licensing and thus law.<br />Also you must buy Refactor! Pro AND CodeRush.<br /><br />If you come to the pricing - ReSharper is cheaper and provides much more useful functionality (for me at least).</div>
+</div>
+<div class='comment'>
+<div class='author'>DAS</div>
+<div class='content'>
+It&#39;s very useful to use templates.<br /><br />I use them a lot. They simplify my life.<br />e.g Instead of typing &#39;MessageBox.Show(&quot;&quot;);&quot;<br />I can type just &#39;mb + space&#39;<br /><br />Also it saves time to create property, methods and so on...<br />You simply can wrap your code into try catch block just pressing one key,<br /><br />e.g. I often wrap my code by using template into <br /><br />try<br />{<br />   // code<br />}<br />catch(SomeException ex)<br />{<br />   ExceptionManger.Publish(ex);<br />}<br /><br />with refactoring tool I can spent more time to think how to better implement it, and not spend valuable time of typing :)<br /><br />People don&#39;t use 90% of functionality of sophisticated tools because they don&#39;t know how to use it :) and don&#39;t to spent time to learn.<br /><br />I still use CodeRush. Recently they added lots of new functionality like ReSharper has (cleaning code, highlighting unused variables, etc.)<br /><br />But ReSharper has a very big disadvantage - I have to buy it, CodeRush I have not</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+my 5 cents. <br /><br />I think that using templates is not a good thing. Sipmly saying, if template complexty goes beyond comment heading and class A{} structure, it starts to become code duplication. <br /><br />As for refactoring functionality - yeah, I liked reShaper as well, though have not been using for quite a long time (&#39;cause in Java now)<br /><br /><br />I&#39;ve also found out that the 90% of the time 90% of the functionality of rich developer&#39;s IDE tools are not used. Most of the time I try thinking on HOW do I implement this or that. <br /><br />After you know how - you do it. <br /><br />Surely, it does not cut off some mechanical work, like migration from one .net version to another. No one likes doing dumb work. <br /><br />Though, tools make life easier until you rely on them completely :) <br /><br />I still remember DAS trying to code smth on our lectures within a studio without (CodeRush?). <br /><br />Keyboard script follows: (keys as they are hit)<br />fpi (backspace)(backspace) public void int method(){...</div>
+</div>
+<div class='comment'>
+<div class='author'>Sergey Litvinov</div>
+<div class='content'>
+Yeah, i agree. Resharper its a good thins. But as you mentioned - it realy slows the IDE. In some cases - work in IDE becames impossible. It&#39;s really main disadvantage of Resharper.</div>
+</div>
+</div>

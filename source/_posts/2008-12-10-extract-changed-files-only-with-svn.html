@@ -1,0 +1,105 @@
+---
+layout: post
+title: "Extract changed files only with SVN"
+date: 2008-12-10T16:22:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>I often need to get the whole directory tree of changed file. ONLY changed files. I used to do it by filtering the files in <a href="http://www.ghisler.com/">Total Commander</a> by modification date.</p>  <p>Now I've just prepared small script to do that for me using SVN and <a href="SharpScript">SharpScript</a>. You may tune it for your need, but here's the good starting point for that.</p>  <p>Requirements:</p>  <ul>   <li>ScriptSharp installed in Program Files.</li>    <li>SVN client.</li>    <li>Resulting folder is always 'Changes'.</li>    <li>Place these files in the same folder that is under SVN.</li> </ul>  <p>&#160;</p>  <p>Usage: run <font face="Courier New">get-svn-status.bat</font> (or just double click it).</p>  <p><strong><u><font face="Courier New">get-svn-status.bat</font>:</u></strong></p>  <div>   <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none">del svn-changes.txt
+svn status &gt;&gt; svn-changes.txt
+<span style="color: #006080">&quot;C:\Program Files\Menees\SharpScript\SharpScriptConsole.exe&quot;</span> grabChanges.scs</pre>
+</div>
+
+<p>&#160;</p>
+
+<p><strong><u><font face="Courier New">grabChanges.scs</font>:</u></strong>
+
+  <br /></p>
+
+<div>
+  <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none"><span style="color: #0000ff">using</span> SharpScript;
+<span style="color: #0000ff">using</span> System;
+<span style="color: #0000ff">using</span> System.IO;
+<span style="color: #0000ff">using</span> System.Linq;
+
+<span style="color: #0000ff">class</span> Program
+{
+    <span style="color: #0000ff">static</span> <span style="color: #0000ff">bool</span> IsChange(<span style="color: #0000ff">string</span> line) {
+        <span style="color: #0000ff">char</span> mark = line[0]; <span style="color: #008000">// Rip off with nulls</span>
+        <span style="color: #008000">// http://knaddison.com/technology/svn-status-code-cheat-sheet</span>
+        <span style="color: #0000ff">switch</span> (mark) {
+            <span style="color: #0000ff">case</span> <span style="color: #006080">'M'</span>: <span style="color: #008000">// Modified</span>
+            <span style="color: #0000ff">case</span> <span style="color: #006080">'A'</span>: <span style="color: #008000">// Added</span>
+            <span style="color: #0000ff">case</span> <span style="color: #006080">'C'</span>: <span style="color: #008000">// Confilict</span>
+            <span style="color: #0000ff">case</span> <span style="color: #006080">'G'</span>: <span style="color: #008000">// merGed from repo to working copy            </span>
+            <span style="color: #0000ff">return</span> <span style="color: #0000ff">true</span>;
+        }
+        <span style="color: #0000ff">return</span> <span style="color: #0000ff">false</span>;
+    }
+    
+    <span style="color: #0000ff">public</span> <span style="color: #0000ff">static</span> <span style="color: #0000ff">void</span> Main(<span style="color: #0000ff">string</span>[] arArgs)
+    {
+        var folder = <span style="color: #006080">&quot;Changes&quot;</span>;
+        <span style="color: #0000ff">try</span> {
+            Directory.Delete(folder, <span style="color: #0000ff">true</span>);
+        } <span style="color: #0000ff">catch</span>(DirectoryNotFoundException) {}; <span style="color: #008000">// We know why</span>
+        Directory.CreateDirectory(folder);
+        
+        <span style="color: #0000ff">using</span>(var fs = File.OpenText(<span style="color: #006080">&quot;svn-changes.txt&quot;</span>)) {
+            <span style="color: #0000ff">string</span> line = <span style="color: #006080">&quot;&quot;</span>;
+            <span style="color: #0000ff">while</span> ((line = fs.ReadLine()) != <span style="color: #0000ff">null</span>) {
+                <span style="color: #0000ff">if</span> (!IsChange(line)) <span style="color: #0000ff">continue</span>;
+                Script.Echo(line);
+                var filePath = line.Substring(7);
+                var dest = folder + <span style="color: #006080">&quot;\\&quot; + filePath;
+                
+                Directory.CreateDirectory(Path.GetDirectoryName(dest));                
+                File.Copy(filePath, dest, true/*overwrite*/);
+            }            
+        }
+        
+        Script.Echo(&quot;</span>Done&quot;);
+    }
+}</pre>
+</div>
+
+<p>&#160;</p>
+
+<p>&#160;</p>
+
+<p>Enjoy.</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Hi Alex,<BR/><BR/>Thanks for the info.<BR/>I'll try this out.</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+Yes. Pinging.<BR/>There is a set of unix POSIX utils ported to WIndows, and having not that much deps. This package is called UnixUtils - http://unxutils.sourceforge.net/<BR/><BR/>This package includes most of the hardly used utilities, and Bourne shell implementation so you can run unix script on your win machine (surely, not often :) <BR/><BR/>The only thing required to do is to dl them, unpack somewhere and add /bin folder to your PATH environment variable. <BR/><BR/>Believe, having all this small text-processing utilities is VERY handsome for development, whatever you do. <BR/><BR/>Just to get some info on how to use these utils, search for unix Man page.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Alex,<BR/>I have to do it on Windows, so Ubuntu is not for me.<BR/>I believe there should be something already available, but I just wrote it for my particular case.<BR/>Anywat, if you'll see something like that for Win, please ping me.<BR/><BR/>Cheers.</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+And, btw, found two more things:<BR/><BR/>1. Not sure you really need, but you always append the modified file list to the file, so after you commit come changes, make more changes again and run your script once more, you'll get 'old' files copied to the result folder, thous they are already in the repo<BR/><BR/>2. When checking the modification flag of svn status command, you don't check for '?' (unversioned) files. They are usually treated as modified, too (they are new)<BR/><BR/>Surely, these two messages are just IMHO - I can not be sure about your intentions :)<BR/><BR/><BR/>THanks, anyway!</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+Errr. <BR/>So, the code of the command itself follows:<BR/><BR/>cp `svn stat | grep ^[MG?AC] | awk '{print $2}'` ~/test</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+When i hear about scripting support in the OS, I always think that my Ubuntu decision is Awesome!<BR/><BR/>You could do it within Ubuntu with the following command <BR/>lexaux@lexaux-laptop:12:33:38:main $cp `svn stat | grep ^[MG?AC] | awk '{print $2}'` ~/test</div>
+</div>
+</div>

@@ -1,0 +1,34 @@
+---
+layout: post
+title: "Use insertBefore instead of appendChild"
+date: 2008-12-16T12:20:00+11:00
+categories:
+ - tricks
+ - javascript
+ - Development
+---
+
+<div class='post'>
+You can get lots of problems when using node.appendChild due to an element may not be allowed to have children. It is especially valid for WYSIWYG editors.<br />
+To overcome this just use node.insertBefore which will always succeeds (it seems so at least). It is so just just because of insertBefore add a child to a parent, which already has at least one child and thus is can have children.<br />
+Also keeping in mind this constraint:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;">existingChild.insertBefore(newChild, <span style="color: blue;">null</span><span style="color: green;">/*Feeding FF*/</span>);
+Assert.areSame(existingChild.parentNode, newChild.parentNode, <span style="color: #006080;">"children should have the same parent"</span>);
+Assert.areSame(root, existingchild.parentNode, <span style="color: #006080;">"[root] should be a parent of [exitingChild]"</span>)</pre>
+</div>
+We can rewrite our code like:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: green;">/*</span>
+<span style="color: green;">* root-|</span>
+<span style="color: green;">*      |-&gt;existingChild-|-newChild</span>
+<span style="color: green;">*/</span>
+
+<span style="color: green;">// BEFORE:</span>
+existingChild.parentNode.appendChild(newChild);
+
+<span style="color: green;">// AFTER:</span>
+existingChild.insertBefore(newChild, null);</pre>
+</div>
+<br />
+This is especially useful when you have no idea what existingChild or root can be (as it is in WYSYWYG HTML editors) and seems to be much better and exactly what users need.</div>

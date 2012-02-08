@@ -1,0 +1,41 @@
+---
+layout: post
+title: "99.99% available ASP.NET and SQL Server Architecture"
+date: 2008-12-16T13:46:00+11:00
+categories:
+ - Development
+ - pc
+ - Software
+ - architecture
+---
+
+<div class='post'>
+I'll summarise a very nice <a href="http://www.codeproject.com/KB/aspnet/ProdArch.aspx">article</a> here:<br />
+<a href="http://www.codeproject.com/KB/aspnet/ProdArch/ProdArch.png" target="_blank" title="Open in a new window"><img align="right" alt="Architecture" height="417" src="http://www.codeproject.com/KB/aspnet/ProdArch/ProdArch.png" width="300" /></a>   <br />
+<ul>
+<li>Always use public <b>firewall </b>and:       <br />
+<ul>
+<li>only expose 80, 443 ports; </li>
+<li>do not open FTP; </li>
+<li>do not open file sharing ports; </li>
+</ul>
+</li>
+<li>Use <b>two Ethernet ports</b>: one for to serve external requests, one for local access. </li>
+<li>"Keep your <b>load balancer dead simple</b> – use basic round robin". </li>
+<li>Each router and firewall has a <b>standby </b>one. </li>
+<li>Get moderately powerful Web servers with <b>enough storage</b>. </li>
+<li>Run <b>64bit </b>version of Windows. </li>
+<li>The whole internal network is fully <b>1Gbit </b>(network cables, routers/switches, NICs etc). </li>
+<li><b>Only use VPN</b> to access your server. </li>
+<li>Database servers must be the most powerful (<b>RAID 10 </b>Disks, Memory, CPU). </li>
+<li>Store Database files on a separate <b>physical</b> disk. </li>
+<li>Always <b>perform backup and log shipping</b> to different physical disks, preferably on RAID 1. </li>
+<li>Use <b>Windows Clustering </b>for high availability with Storage Area Network. </li>
+<li>RAM,<b> lots of RAM</b> for Database servers (2 GB + 60% of MDF size). </li>
+<li>Get <b>Dual Path Fiber</b> Channel connection to SAN from your servers. </li>
+<li>Have a <b>separate server for moving IIS logs</b> from webserver. </li>
+<li>Have a large<b> detachable external storage</b> like External USB drives. </li>
+<li>Use<b> fast SCSI RAID 1</b> disks. </li>
+<li>Use <b>separate NIC</b> on all servers that is connected to a separate private network via separate switch <b>for bulk operations</b>. </li>
+</ul>
+Please keep in mind these suggestions are for really heavy duty web applications.</div>

@@ -1,0 +1,126 @@
+---
+layout: post
+title: "NHAML – scripts and styles, code block"
+date: 2009-07-14T16:51:00+10:00
+categories:
+ - nhaml
+ - Development
+ - asp.net mvc
+---
+
+<div class='post'>
+Another useful tip for NHAML users that I came up with. I am assuming the site with following technical description:<br />
+<ol>
+<li>Every page has common CSS. </li>
+<li>Every page has common scripts. </li>
+<li>Some page may include up to 2 additional CSS files. </li>
+<li>Some pages may include up to 2 additional JS files. </li>
+<li>Soma pages may include Google Maps Script. </li>
+<li>Some pages may include some of the above based on conditions. </li>
+</ol>
+Having these I want to make it as easy as it can be. With WebForms view engine it is not really problematic but it is too verbose. It means more code, more time spent more errors.<br />
+But with NHAML it makes it a breath.<br />
+Satisfying requirements 1 and 2 i not a problem at all. This is not a problem with WebForms as well. Just including those files in the master page.<br />
+What about other? Well, easy. Here is whet i write to satisfy 3 and 4.<br />
+<pre class="csharpcode">^ css = ""
+^ script = ""
+%h2 Product Details
+
+OR
+^ css = "another"
+^ script = "another"
+%h2 Product Details</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+<br />
+What happens here? By using empty string I declare that I want to include the script/css from the default location with default name for the given controller. This is convenient and conventional. This way I enforce that the assets (JS, CSS) are not going to be mixed with views or something else.<br />
+In first example I just say “Hey! I need CSS and Script for current controller!”. 
+  <br />In second example I say&nbsp; “Hey! I need CSS and Script for current controller with name <i>another</i>!”. 
+
+  <br />
+You don’t care how and where they will be included. You just tell what you need. That’s it.<br />
+This is how we can include 2 script and 2 CSSs:<br />
+<pre class="csharpcode">^ css = <span class="str">""</span>
+^ script = <span class="str">""</span>
+^ csss = <span class="str">"another"</span>
+^ scripts = <span class="str">"another"</span></pre>
+<br />
+Ok. Let’s go to 5. The idea is the same but much more “typed”:<br />
+<pre class="csharpcode">^ needMap = <span class="kwrd">true</span>
+^ script = <span class="str">"map-integration"</span></pre>
+Can it be any easier? We say here: “Mate, I need map on this page. Also don’t forget to give me script that integrates the map with my page.”.<br />
+<br />
+Ok. Now we came to the last point – 6. This is freaking easy as well:<br />
+<pre class="csharpcode">- if (Model.CanEdit)
+  ^ script = ""
+  ^ css = ""
+  ^ needMap = true
+  ^ script2 = "map-integration"</pre>
+We tell here: “If current user can edit this page then please add default script and css for the controller, include map and integration script for it.”<br />
+And the possibilities to play with it are unlimited. How does this magic happen?<br />
+All is defined in the NHAML “master page” which is called <i>layout</i>. And here it is:<br />
+<pre class="csharpcode">^ string css = null;
+^ string css2 = null;
+^ string script = null;
+^ string script2 = null;
+^ bool needMaps = false;
+%html{xmlns="http://www.w3.org/1999/xhtml"}
+  %head
+    != Html.Content().EmitCommonStyles()
+    != css==null ? null : Html.Content().EmitCss(css)
+    != css2==null ? null : Html.Content().EmitCss(css2)
+    != needMaps ? "<span class="kwrd">&lt;</span><span class="html">script</span> <span class="attr">type</span><span class="kwrd">='text/javascript'</span> <span class="attr">src</span><span class="kwrd">='http://maps.google.com/maps/api/js?sensor=false'</span><span class="kwrd">&gt;&lt;/</span><span class="html">script</span><span class="kwrd">&gt;</span>" : null
+
+    != Html.Content().EmitCommonScripts()    
+    != script==null ? null : Html.Content().EmitScript(script)
+    != script2==null ? null : Html.Content().EmitScript(script2)
+    
+  %body  </pre>
+<br />
+I don’t want to explain this – go figure. This is easy as well… Or… ok. in 2 words:<br />
+<ol>
+<li>We define .NET variable in the layout using “^” symbol. </li>
+<li>The variables defined using “^” are accessible in any page. </li>
+<li>There are 2 types of code blocks in NHAML: 
+    <br />
+<ol>
+<li>starts with “-” - evaluates in its own scope (for simplicity let’s say its scope of page of another block); </li>
+<li>starts with “^” – evaluates in the global scope AND before all other scoped blocks (eg: “-”). </li>
+</ol>
+</li>
+</ol>
+Thanks to <a href="http://twitter.com/SimonCropp" target="_blank">Simon</a> for explaining this.<br />
+Exercise for you: make the layout to satisfy these requirements:<br />
+<ol>
+<li>Some pages may have page title (the one shown in the browser): “Action – Area – SiteName” </li>
+<li>Some pages may have page title: “Action – SiteName” or “Area – SiteName”. </li>
+<li>If neither Action nor Area are provided site will have in its title “SiteName”. </li>
+<li>A page should not be required to specify anything if it doesn’t need to. So if a page doesn’t provide neither Action nor Area it should not have any code at all to handle this. </li>
+</ol>
+Can you do that? [Tip: NHAML supports extension methods as well.]</div>

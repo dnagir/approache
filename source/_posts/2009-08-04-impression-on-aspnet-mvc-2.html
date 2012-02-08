@@ -1,0 +1,24 @@
+---
+layout: post
+title: "Impression on ASP.NET MVC 2"
+date: 2009-08-04T08:58:00+10:00
+categories:
+ - Development
+ - upgrade
+ - asp.net mvc
+---
+
+<div class='post'>
+<br />
+You probably already know that <a href="http://haacked.com/archive/2009/07/30/asp.net-mvc-released.aspx" target="_blank">ASP.NET MVC Preview 1 has been released</a>. You can quickly watch the <a href="http://channel9.msdn.com/posts/Glucose/Hanselminutes-on-9-ASPNET-MVC-2-Preview-1-with-Phil-Haack-and-Virtual-Scott/" target="_blank">video</a> to get the impression.<br />
+Overall, I must admit, I like it. Things I like the most:<br />
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/ee308450%28VS.100%29.aspx" target="_blank">Display and Edit Templates</a> – I did workaround it in MVC 1 by using partials with specific name,</li>
+<li>Areas support. As <a href="http://weblogs.asp.net/scottgu/archive/2009/07/31/asp-net-mvc-v2-preview-1-released.aspx" target="_blank">Scott explains</a> it allows to reuse various ASP.NET MVC projects.</li>
+</ul>
+What is do DISLIKE here:<br />
+<ul>
+<li><b>DataAnnotation</b> validation support – why are we <b>forced to apply attributes</b> on our model. I often have situations where I cannot tell exact validation rule developing the Model. I should specify it later. No way of doing it with DataAnnotations. There MUST be an interface for custom validation provider.</li>
+<li>As far as I understand (from the Release Notes) <b>Views from Area projects should be copied</b> over to the main project. This IS UGLY IT IS NOT REUSABLE VIEW, IT IS CUT-AND-PASTABLE VIEW with all the consequences.</li>
+</ul>
+And I am also not sure what the effort is involved for ViewEngines to support the new Templates. I <i><b>guess</b></i>, it should not be a big deal. But it needs some attention.</div>

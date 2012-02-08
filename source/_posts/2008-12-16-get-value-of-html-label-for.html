@@ -1,0 +1,16 @@
+---
+layout: post
+title: "Get value of HTML LABEL FOR"
+date: 2008-12-16T11:30:00+11:00
+categories:
+ - javascript
+ - Development
+ - remember
+---
+
+<div class='post'>
+Make sure you use the code like this to get the value of LABEL's FOR attribute. This will work in most browsers:<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;"><span style="color: blue;">var</span> labelFor = myLabel.htmlFor || myLabel.getAttribute(<span style="color: #006080;">'for'</span>); // htmlFor <span style="color: blue;">is</span> W3.org defined and <span style="color: blue;">is</span> <span style="color: blue;">in</span> IE, <span style="color: #006080;">'for'</span> <span style="color: blue;">in</span> <span style="color: blue;">in</span> FF</pre>
+</div>
+Just a reminder for myself :)</div>

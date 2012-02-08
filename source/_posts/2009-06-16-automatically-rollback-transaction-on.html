@@ -1,0 +1,113 @@
+---
+layout: post
+title: "Automatically rollback transaction on error in T-SQL"
+date: 2009-06-16T09:54:00+10:00
+categories:
+ - sql
+ - Development
+---
+
+<div class='post'>
+During any kind of data migration you don’t want to leave any data changed in the middle of migration when an error occurs.<br />
+By default Microsoft Sql Server continues batch execution if an error occurs. It skips ONLY the statement with the error.<br />
+To make sure it will rollback the transaction use SET <a href="http://msdn.microsoft.com/en-us/library/aa259192%28SQL.80%29.aspx" target="_blank">XACT_ABORT</a> ON before opening a transaction.<br />
+Just some stupid example from the top of my head:<br />
+<pre class="csharpcode"><span class="kwrd">SET</span> XACT_ABORT <span class="kwrd">ON</span>
+
+<span class="kwrd">BEGIN</span> <span class="kwrd">TRAN</span>
+
+  <span class="kwrd">UPDATE</span> PaymentTax
+    <span class="kwrd">SET</span> Amount = p.Amount * 0.1
+  <span class="kwrd">FROM</span>
+    Payment p, PaymentTax t
+  <span class="kwrd">WHERE</span>
+    t.PaymentId = p.Id
+    <span class="kwrd">AND</span> p.PaymentType = 1 <span class="rem">-- CreditCard</span>
+
+  <span class="rem">-- Do more stuff in-between</span>
+
+  <span class="kwrd">UPDATE</span> Payment
+    <span class="kwrd">SET</span> Amount = Amount - Amount*0.1
+  <span class="kwrd">WHERE</span> PaymentType=1 <span class="rem">-- CreditCard</span>
+
+<span class="kwrd">COMMIT</span> <span class="kwrd">TRAN</span></pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style><style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style><style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+setting the SET XACT_ABORT ON will ensure there will be no possibility of changing Payments’ amount without changing tax.<br />
+The XACT_ABORT is available at least since Sql Server 20000 so should be ok if you work with different versions of SqlServer.</div>

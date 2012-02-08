@@ -1,0 +1,80 @@
+---
+layout: post
+title: "Install Subversion on Windows 2000"
+date: 2008-11-28T18:08:00+11:00
+categories:
+ - Development
+ - Software
+---
+
+<div class='post'>
+<p>The problem is that Win2000 has no Control Manager command line tool, so SVN does not register itself as a Windows Service (in case you choose this option).</p>  <p>I tried to use sc.exe with no success at all.</p>  <p>sc create svn binPath=&quot;c:\Path To\SVN\Service.exe&quot; with all possible options just shows me the help screen.</p>  <p>Here's couple of options I've tried:</p>  <p><code></code>    <pre>sc create svn binPath=&quot;&quot;&quot;C:\Program Files\CollabNet Subversion Server\svnserve.exe&quot;&quot; --service -r c:\svn_repository --listen-port 3690&quot; start=boot DisplayName=&quot;Subversion Server&quot;</pre>
+
+  <pre>sc create svn binPath=&quot;C:\Program Files\CollabNet Subversion Server\svnserve.exe&quot; start=boot</pre>
+
+  <pre>sc create svn binPath=&quot;wrongFile.exe&quot;</pre>
+</p>
+
+<p></p>
+
+<p>All of them give the same help screen with the same info and no service is registered.</p>
+
+<p>&#160;</p>
+
+<p>So I installed <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=3E972E9A-E08A-49A2-9D3A-C0519479E85A&amp;displaylang=en">Win NT 4.0 Resource Kit Support Tools</a>. The bad thing is that it asks me to restart the server. It contains the same sc.exe - nothing new to manage services.msc.</p>
+
+<p>Next attempt was to try instsrv.exe from <a href="http://www.microsoft.com/downloads/details.aspx?familyid=9d467a69-57ff-4ae7-96ee-b18c4790cffd&amp;displaylang=en">Windows Server 2003 Resource Kit</a>. But it says that it really supports XP and 2003 (I expect I would be able to use only one utility from the package, but I can't even install it).</p>
+
+<p>I hit <a href="http://www.tacktech.com/display.cfm?ttid=197">Create your own user-defined services Windows NT/2000/XP/2003</a> article but still cannot find where to download the resource kit for Win2000.</p>
+
+<p>Searching again... As a result I found <a href="http://support.microsoft.com/kb/927229">Windows 2000 Resource Kit Tools for administrative tasks</a>. But it has no instsrv.exe (thou it has delsrv.exe that deletes the service). Hrr!</p>
+
+<p>Ok. Now let's try to take the instsvr.exe from Win2003 server. Maybe it will work on Win2000... I install the Win2003 Resource Kit. Take that file and copy it to Win2000's system32 folder. Now let's pray:</p>
+
+<p></p>
+
+<p><code>
+    <p>instsrv svn &quot;&quot;&quot;C:\Program Files\CollabNet Subversion Server\svnserve.exe&quot;&quot; --service -r c:\svn_repository --listen-port 3690&quot;</p>
+  </code></p>
+
+<p>This gives me &quot;- The fully qualified path to the .EXE must be given&quot; which is much better.</p>
+
+<p><code></code>
+
+  <p>instsrv svn &quot;C:\Program Files\CollabNet Subversion Server\svnserve.exe&quot;</p>
+</p>
+
+<p>This one worked well and the service was in the list. At last! It doesn't allow me to specify the parameters of the service itself, so I'm going to service Properties to change it. But then it just doesn't start (we need to add command line arguments as well).</p>
+
+<p>So I remove the service from the list and start from scratch. I went back to sc.exe and installed SVN server to location where the path has no spaces (weird).</p>
+
+<p>After couple of manipulations and a lot of Googling and fiting with troubles I found the exact command that registers the service and <em>allow to start it</em>. Please note: the service name should be the same as executable (one more weird thing), command line parameters must have space after = symbol. <strong>So here's the result:</strong></p>
+
+<p><code>sc create svnserve binpath= &quot;C:\SVN\Server\svnserve.exe --service -r C:\SVN\repository --listen-port 3690&quot; displayname= &quot;Subversion Repository&quot; depend= Tcpip</code></p>
+
+<p>&#160;</p>
+
+<p>Hope it saves your time.</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+You are welcome.</div>
+</div>
+<div class='comment'>
+<div class='author'>goosy</div>
+<div class='content'>
+Thanks so much, I was having the same problem, it always appeared the sc help screen and no service was created. I finally found the solution!!!</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Hi Alexander,<BR/><BR/>Huh. It's enough for me :) I don't really want struggle again with SVN, especially on Unix (which I'm not really familiar with) :)<BR/><BR/>It was painful enough for me to install it on Win2000.<BR/><BR/>Thanks for the info on Git. It looks good, but it is a distributed version control. I really need centrlised one.<BR/><BR/>Cheers.</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+After all this stuff, you should try to build Subversion 5 client from official source on Ubuntu Hardy Heron :)<BR/><BR/>This turns to be interesting experience, too. <BR/><BR/>Anyway - SVN rules, and I'm happy to see people using Subversion instead of MICRO$OFT source providers.<BR/><BR/>Btw - there is one more option for source control - GIT.<BR/>I know not much about it, but it seems to be times faster. And it is used for some opensource projects.</div>
+</div>
+</div>

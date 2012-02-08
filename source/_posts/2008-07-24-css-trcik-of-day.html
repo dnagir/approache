@@ -1,0 +1,37 @@
+---
+layout: post
+title: "CSS Trcik of the day"
+date: 2008-07-24T16:57:00+10:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>Tried to align div in IE7 and FF3. The code is similar to this one:</p>  <div>   <div style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none">     <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: white; border-bottom-style: none"><span style="color: #606060">   1:</span> <span style="color: #0000ff">&lt;</span><span style="color: #800000">div</span> <span style="color: #ff0000">class</span><span style="color: #0000ff">=&quot;container&quot;</span><span style="color: #0000ff">&gt;</span></pre>
+
+    <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: #f4f4f4; border-bottom-style: none"><span style="color: #606060">   2:</span>   <span style="color: #0000ff">&lt;</span><span style="color: #800000">div</span> <span style="color: #ff0000">class</span><span style="color: #0000ff">=&quot;child&quot;</span><span style="color: #0000ff">&gt;</span>Some content<span style="color: #0000ff">&lt;/</span><span style="color: #800000">div</span><span style="color: #0000ff">&gt;</span></pre>
+
+    <pre style="padding-right: 0px; padding-left: 0px; font-size: 8pt; padding-bottom: 0px; margin: 0em; overflow: visible; width: 100%; color: black; border-top-style: none; line-height: 12pt; padding-top: 0px; font-family: consolas, &#39;Courier New&#39;, courier, monospace; border-right-style: none; border-left-style: none; background-color: white; border-bottom-style: none"><span style="color: #606060">   3:</span> <span style="color: #0000ff">&lt;/</span><span style="color: #800000">div</span><span style="color: #0000ff">&gt;</span></pre>
+  </div>
+</div>
+
+<p>&#160;</p>
+
+<p>I wanted to align (let's say center) child element in relation to container. So I wrote <font face="Courier New">text-align: center</font> CSS to container. It worked in IE, but not in FF. That was very disappointing for me and I couldn't figure out what a problem was. I could align it, but it would require to modify HTML. And I suddenly found <a href="http://geekswithblogs.net/timh/archive/2006/04/19/75606.aspx">this</a>. Many thanks to this guy.</p>
+
+<p>Lesson learned. If you use text-align for layout things and need FF additionally add <font face="Courier New">text-align: -moz-center</font> rule to the CSS.</p>
+
+<p>How I could possibly know about <font face="Courier New">-moz-FTW</font> for the <font face="Courier New">text-align</font>...</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Yes. But it only applies if you only need to center it. I had to mention that I have to align on left, right or center. I don't know at design time how the child should be aligned, so I must write all 3 cases.<BR/>So this guy saved my day.</div>
+</div>
+<div class='comment'>
+<div class='author'>Peter Morris</div>
+<div class='content'>
+I think you can do something like<BR/><BR/>.child<BR/>{<BR/>  width : auto;<BR/>  margin-left : auto;<BR/>  margin-right: auto;<BR/>}</div>
+</div>
+</div>

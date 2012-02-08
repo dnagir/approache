@@ -1,0 +1,36 @@
+---
+layout: post
+title: "Solve Designer error in BDS 2006"
+date: 2007-02-25T02:34:00+11:00
+categories:
+ - borland
+ - Development
+ - frustration
+---
+
+<div class='post'>
+Many of developers working with ASP.NET in design time saw the error: "<i><b>The designer could not be shown for this file because none of the classes within it can be designed</b></i>".
+
+I happens in Visual Studio and in Borland Developer Studio when a web page is inherited from some base class and not from default Page.
+
+Common actions to solve it are:
+<br />
+<ol>
+<li>Add public default constructor to base class.</li>
+<li>Add private InitializaComponent method to base.</li>
+<li>Call InitializaComponent from the default constructor.</li>
+</ol>
+But in BDS there're some more issues.<br />
+Even after these steps it can still show the error. After I played with that I found that this error appears in following situation:<br />
+<ol>
+<li>Open web project.</li>
+<li>Default page is opening in design mode.</li>
+<li>If it has errors no one page that is inherited from some base class will open anymore.</li>
+</ol>
+<i><span style="font-size: 85%;">Tho note: if base class will be changed to default one (Page), than designer successfully appears.</span></i><br />
+So, in a short, to make BDS working with base class in design time one of solutions is needed:<br />
+<ul>
+<li>Add constructor, InitializaComponent method to base class. Then inherit default page from standard Page class. Other web forms should successfuly be available in designer.</li>
+<li>If designer is required, temporary inherit from standard Page class.</li>
+</ul>
+That's what I found.</div>

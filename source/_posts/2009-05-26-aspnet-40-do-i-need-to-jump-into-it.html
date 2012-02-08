@@ -1,0 +1,46 @@
+---
+layout: post
+title: "ASP.NET 4.0 – Do I need to jump into it?"
+date: 2009-05-26T10:44:00+10:00
+categories:
+ - Development
+ - .net
+ - asp.net
+ - upgrade
+---
+
+<div class='post'>
+Just quickly going through the <a href="http://www.asp.net/learn/whitepapers/aspnet40/" target="_blank">whitepaper</a> published a while ago. I can see a lot of improvements around ASP.NET 4.0. But the ones below are probably the most important for me:<br />
+<ul>
+<li><a href="http://www.asp.net/learn/whitepapers/aspnet40/#_Toc223325467" target="_blank"><img align="right" height="379" src="http://static.asp.net/asp.net/images/whitepapers/aspnet40/whats-new-Fig1b.png" style="display: inline; margin-left: 0px; margin-right: 0px;" width="539" />AJAX Functionality</a>       <br />
+<ul>
+<li>Client Template Rendering – out of the box client-side templating engine. It seems to be very tightly integrated with ASP.NET infrastructure. DataView control looks very good. </li>
+<li>Script Manager now allows to use any JS library and not only ASP.NET AJAX. </li>
+<li>Very large client-side infrastructure support and integration with .NET (see pic) </li>
+</ul>
+</li>
+<li>WebForms      <br />
+<ul>
+<li>Enabling View State for Individual Controls – nice addition. </li>
+<li>Routing (it really came from ASP.NET MVC available in .NET 3.5) – it’s said that it is easier to use it. </li>
+<li><a href="http://www.asp.net/learn/whitepapers/aspnet40/#_Toc223325481" target="_blank"><b>Setting Client IDs</b></a> – there have been a lot of feedback on it since .NET 1. And it seems Microsoft has finally attended this issue. It allows to control the IDs on the generated HTML. It my opinion this is one of the <b>most significant</b> improvements in WebForms. </li>
+<li>FormView Control now can render content with not table at all which is great thing (finally!). </li>
+<li>ListView has better control over the HTML. </li>
+</ul>
+</li>
+<li>Data      <br />
+<ul>
+<li>Support for inheritance in Data Model for both EF and Linq2Sql. </li>
+<li>EF supports many-to-many relationships. </li>
+</ul>
+</li>
+<li>VS Web Designer Improvements      <br />
+<ul>
+<li>Improved CSS compatibility – better CSS 2.1 compliance (however I’m not sure how better it is). </li>
+<li><a href="http://www.asp.net/learn/whitepapers/aspnet40/#_Toc223325501" target="_blank">Web.config transformation</a> – allows to modify the .config file before deployment. Very useful feature I wanted it so many times before. </li>
+</ul>
+</li>
+</ul>
+There are a whole bunch of other useful thins, but for me that’s it.<br />
+Honestly saying I do not see too cardinal changes, I would say that a lot of outstanding issues have been addresses (especially control over generated HTML).&nbsp; I do not see big innovations here. So wouldn’t jump into ASP.NET 4.0 just now. And, who knows, maybe I’ll just totally skip and will pick ASP.NET 5.<br />
+Just please do not mix ASP.NET 4 and .NET Framework 4 . There are numerous changes made in .NET 4.</div>

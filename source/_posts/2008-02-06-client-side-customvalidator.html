@@ -1,0 +1,85 @@
+---
+layout: post
+title: "Client-side CustomValidator - overcomplicating things"
+date: 2008-02-06T16:48:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>One more time using WebForms I was struggling because of overcomplicated things.</p>  <p>I just needed to validate client-side using <a href="http://msdn2.microsoft.com/en-us/library/9eee01cx%28VS.71%29.aspx" target="_blank">CustomValidator</a>. So what's a problem? There is a ClientValidationFunction that does exactly this.</p>  <p>The most important problem with this approach: it's impossible to set ControlToValidate property to controls that don't have values (there're plenty of them). It just gives a runtime error.</p>  <p>I could of course write <a href="http://aspnet.4guysfromrolla.com/articles/073102-1.aspx" target="_blank">another server control</a> and it would be the best option. But I was lazzy for that and didn't feel it's good to write it for simple things.</p>  <p>So I have the problem in my ClientValidationFunction: It doesn't receive any data except value (that is not available). So I decided to extend this approach and make the validation function to look like this:</p>  <pre class="csharpcode"><span class="kwrd">function</span> ValidateAgreement(src, args, <strong>extParam</strong>)
+{
+<span class="kwrd">if</span> (extParam) {
+    args.IsValid = <strong>extParam</strong>.<span class="kwrd">checked</span>;
+}
+}</pre><p>This is just a simple example but shows the idea. We can pass any data via <strong>extParam</strong> in our validator. So how is it used? Of course we need to get this parameter somewhere.</p><p>So the server's code looks like this:</p><pre class="csharpcode"><span class="kwrd">&lt;</span><span class="html">asp:CustomValidator</span> <span class="attr">id</span><span class="kwrd">="AgreementValidator"</span> <span class="attr">runat</span><span class="kwrd">="server"</span>
+<span class="attr">Display</span><span class="kwrd">="Dynamic"</span>
+C<span class="attr">lientValidationFunction</span><span class="kwrd">='&lt;%# string.Format("<span style="color: rgb(0, 128, 64);">CVH.createFunction</span>(ValidateAgreement, {0})", Agreement.ClientID) %&gt;'</span> <span class="kwrd">/&gt;</span></pre>
+
+<p>What's happening there? ClientValidationFunction is assigned a method created by CVH.createFunction JavaScript.</p><p>What's CVH.createFunction? Here it is:
+</p><pre class="csharpcode"><span class="rem">// CVH=CustomValidatorHelper</span>
+<span class="kwrd">var</span> CVH={
+createFunction: <span class="kwrd">function</span>(validationFunction, extParamData) {
+    <span class="kwrd">var</span> originalFunction = validationFunction;
+    <span class="kwrd">var</span> extParam = extParamData;
+
+    <span class="kwrd">return</span> <span class="kwrd">function</span>(src, args) {
+        <span class="rem">// Proxy the call...</span>
+        <span class="kwrd">return</span> originalFunction(src, args, extParam);
+    }
+}
+}
+<span class="kwrd">var</span> CustomValidatorHelper=CVH;</pre>So this just creates a function that becomes a proxy between CustomValidator internals and the actual validation function. This allows to pass more parameters to the validation function.
+
+<p>Other possible usage. Just don't allow user to submit form if some content is not visible (for example, license agreement has not ben read).</p><pre class="csharpcode"><span class="kwrd">&lt;</span><span class="html">asp:CustomValidator</span> <span class="attr">id</span><span class="kwrd">="AgreementScrolledDivValidator"</span> <span class="attr">runat</span><span class="kwrd">="server"</span>
+<span class="attr">ClientValidationFunction</span><span class="kwrd">="CVH.createFunction(</span><span><span class="kwrd">VisibleDivValidator</span></span><span class="kwrd">, 'contentDiv')"</span> <span class="kwrd">/&gt;</span></pre><pre class="csharpcode"><span class="kwrd">function</span> VisibleDivValidator(src, args, extParam) {
+args.IsValid = (!!extParam &amp;&amp; document.getElementById(extParam).style.display == <span class="str">'block'</span>);
+}</pre><p>I don't need anymore to create server controls to validate on the client. And I like this.</p><p>It's a power of JavaScript.</p><p>But all the validation stuff is a bit ugly with WebForms. I wish it could use some JS validation framework... Like <a href="http://www.blogger.com/fValidate" target="_blank">fValidate</a>, <a href="http://bassistance.de/jquery-plugins/jquery-plugin-validation/" target="_blank">Validation jQuery Plugin</a>.</p></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+You are welcome.</div>
+</div>
+<div class='comment'>
+<div class='author'>Nick Pearce</div>
+<div class='content'>
+Brilliant. Worked immediately and was easy to expand to three parameters. THANK YOU.</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Dude, You are just awesome..........Millions Thanks to you. I have spent  more than a day to but couldn't.<br /><br />Thanks for this post.<br />Keep posting........</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+This is brilliant! I have been looking for a way to pass extra parameters for hours! <br />Many thanks, Jeroen</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+You can put the JS code wherever you like (I prefer external JS file).<BR/><BR/>With my approach you'll need to iterate all checkboxes and return true if there's one checked.<BR/><BR/>But in your case You can do this without my approach at all:<BR/>First thing you need to do is to determine the number of items checked. You can do it by adding onclick attribute to each CheckBox in the grid, like <A HREF="http://msdn.microsoft.com/en-us/library/system.web.ui.webcontrols.gridview.rowdatabound.aspx" REL="nofollow">so</A>:<BR/><BR/>void GridView_RowDataBound(Object sender, GridViewRowEventArgs e) {<BR/>  CheckBox check = FindYourCheckBoxInTheRow(sender, e);<BR/>  if (ckeck != null) {<BR/>    check.Attributes[&quot;onclick&quot;] = string.Format(&quot;itemClicked(&#39;{0}&#39;)&quot;, check.ClientID);<BR/>  }<BR/>}<BR/><BR/>Next, implement your itemClicked JS function like this:<BR/>var globalNumberOfItemsChecked = 0;<BR/>function itemClicked(id) {<BR/>  var justChecked = document.getElementById(id).value;<BR/><BR/>  globalNumberOfItemsChecked = justChecked ? globalNumberOfItemsChecked+1 : globalNumberOfItemsChecked-1;<BR/>}<BR/><BR/>Ok. Now we know how many items are checked at any time. So we can just check that in the validator function:<BR/>&lt;asp:CustomValidator id=&quot;ItemCheckedValidator&quot; runat=&quot;server&quot;<BR/>Display=&quot;Dynamic&quot;<BR/>ClientValidationFunction=&#39;ValidateItemChecked&#39; /&gt;<BR/><BR/>and:<BR/>function ValidateItemChecked(src, args) {<BR/>  args.IsValid = globalNumberOfItemsChecked &gt; 0;<BR/>}<BR/><BR/>That&#39;s it. If I haven&#39;t forgotten anything it should work.</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Hi, <BR/><BR/>I have problem with above technique. I want to use the above validation to validate the gridview for selection of at least one checkbox.<BR/>I am using external .js file. Should I write createFunction script in aspx page or .js file?<BR/><BR/>Can u please help me as I am not able to call the client validation function(eg. TestCheckBox)?<BR/><BR/>Thanks in advance...</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Great post!!!! I have searched for this. Helped me a lot.</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Glad you found it helpful.</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Awesome!!! I have been searching for something like this all over the web.</div>
+</div>
+</div>

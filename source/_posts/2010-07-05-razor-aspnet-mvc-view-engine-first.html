@@ -1,0 +1,102 @@
+---
+layout: post
+title: "Razor - ASP.NET MVC View Engine - first impression"
+date: 2010-07-05T22:48:00+10:00
+categories:
+ - asp.net mvc
+ - view-engine
+ - razor
+---
+
+<div class='post'>
+<div xmlns="http://www.w3.org/1999/xhtml">
+The new view engine is being released by Microsoft and looking at <a href="http://weblogs.asp.net/scottgu/archive/2010/07/02/introducing-razor.aspx" target="_blank">the announcement</a> I feel a bit confused. Two questions flying in my head:<br />
+<ol>
+<li>Why not take existing one and just help to make it better/sponsor?</li>
+<li>Is it going to be a new productive thing or will it just make the view to be more spaghetti-like?</li>
+</ol>
+Not sure now. Time will show, but there are some things I feel I just must comment on. I'll try to look at it as a developer with no any politics and trying to think how it can help me.<br />
+<blockquote>
+Unit Testable: The new view engine implementation will support the ability to unit test views (without requiring a controller or web-server, and can be hosted in any unit test project – no special app-domain required).</blockquote>
+<br />
+For me this one would probably be enough to jump onto that with head. I still have <a href="http://stackoverflow.com/questions/2781027/test-views-in-asp-net-mvc2-ala-rspec" target="_blank">the question</a> on StackOverflow about testing the view hanging around. It <i>looks like</i> now I have the answer.<br />
+<blockquote>
+the start of a code block with Razor using a @ character. Unlike &lt;% %&gt; code nuggets, Razor does not require  you to explicitly close the code-block</blockquote>
+This is a huge typing and "mistake" saver. I like it, but still have the concern about the readability and ambiguity of such syntax. I need to give it a try first to tell whether this helps to do the job or screws things up. But the intention is definitely good.<br />
+Next, the code blocks mixed together with HTML:<br />
+<code>  &lt;ul&gt;<br />    @foreach(var p in products) {<br />      &lt;li&gt;@p.Name ($@p.Price)&lt;/li&gt;<br />    }<br />  &lt;/ul&gt;</code><br />
+Currently it looks a bit weird to me. We need to get used to it.<br />
+<br />
+So you can do lots of interesting things using such syntax. Additionally I have to state that the engine has a special tag - <i>text</i>. It is used actually to avoid adding any wrapping tag to markup serving the purpose of grouping things together.<br />
+<blockquote>
+By default content emitted using a @ block is automatically HTML encoded to better protect against XSS attack scenarios.</blockquote>
+That is something that I would expect from any view engine - encode by default. So far so good.<br />
+<blockquote>
+create re-usable HTML helpers using a more declarative approach.</blockquote>
+I like this part <b>a lot (and I mean it)</b>, I won't repeat what it is said in the post, but will explain how I can benefit from it.<br />
+Currently I create a whole bunch of HTML helpers (written in .cs file in C#) which look very ugly should you have more than just a couple of them.<br />
+It just becomes messy, hard to change, support and maintain. And the fact that C# generates HTML is very annoying for the same reasons. That should be the view's concern.<br />
+Now we have it - just create a file, mark its content as helper and it is available on all the pages. Beauty!<br />
+(<b>NOTE</b>: actually after a bit more thinking we can do <i>similar</i> in Spark or NHaml. The word <i>similar</i> is used intentionally).<br />
+<blockquote>
+One other useful (and extremely powerful) feature we are enabling with Razor is the ability to pass “inline template” parameters to helper methods.  These "inline templates" can contain both HTML and code, and can be invoked on-demand by helper methods.</blockquote>
+Previously we, generally, injected C# code into the template. Now we can do the other way around. Absolut power. Only God knows where it can bring us :) <br />
+<h3>
+
+
+
+What I want from it</h3>
+One of the most frustrating things working with views in ASP.NET MVC is passing the values from a controller to a view. So the syntax that would read values from ViewData dictionary would the biggest time saver. Something along this:<br />
+<code>
+@currentTime.ToString("d")
+</code>
+<br />
+which would be equivalent for <br />
+<code>
+((DateTime)ViewData["currentTime"]).ToString("d")
+</code>
+
+So that we do not even need to provide the time of the object in the ViewData.<br />
+<br />
+<h3>
+
+
+Summary</h3>
+The first impression is <b>very positive</b>. Though I have some doubts in the syntax acceptance.<br />
+But I have no doubt that this engine is the way better than WebForms. Can't yet say it is better than NHaml and Spark (and would not be fair to say that as they solve a bit different problems).<br />
+This time I feel that <b>Microsoft has listened</b> to the developers and produced something that really brings value, productivity, less frustration and more fun (and fun is the starting point of being a happy developer who can bring value to a company).<br />
+<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_3276E6B4.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_3276E6B4.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_2EE4DDA5.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_2EE4DDA5.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_5DE7197C.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_5DE7197C.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_2EB52DE5.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_2EB52DE5.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_22B33DB1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_22B33DB1.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_78EFC2BD.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_78EFC2BD.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_775B2E84.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_775B2E84.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_5F279E5C.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_5F279E5C.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_1DACEC03.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_1DACEC03.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://weblogs.asp.net/blogs/scottgu/image_43366964.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://weblogs.asp.net/blogs/scottgu/image_43366964.png" /></a></div>
+</div></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Looking at the screenshots I guess Visual Studio highlights the code separately, so it should be good enough.</div>
+</div>
+<div class='comment'>
+<div class='author'>Carson 63000</div>
+<div class='content'>
+&quot;I like it, but still have the concern about the readability and ambiguity of such syntax&quot;<br /><br />With the Visual Studio support, does it get highlighted in such a fashion that it makes the syntax readable and unambiguous? (I haven&#39;t installed Razor to take a look myself yet)</div>
+</div>
+</div>

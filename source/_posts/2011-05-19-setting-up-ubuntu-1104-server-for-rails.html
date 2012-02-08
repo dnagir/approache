@@ -1,0 +1,102 @@
+---
+layout: post
+title: "Setting up Ubuntu 11.04 server for Rails with RVM"
+date: 2011-05-19T00:09:00+10:00
+categories:
+ - linux
+ - ruby-on-rails
+---
+
+<div class='post'>
+<p>
+I had to set up the server (Ubuntu 11.04) for running couple of Rails apps and thought I could share the notes I've written while doing that. 
+
+Any feedback and improvements are welcome.
+
+</p>
+
+<p>
+
+<code>
+<pre>
+apt-get update ; apt-get upgrade
+
+# set timezone
+dpkg-reconfigure tzdata
+
+
+# RVM
+bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
+
+# update /etc/bash.bashrc
+
+
+# -y to answer YES for questions
+aptitude -y install build-essential bison openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev
+
+rvm install 1.9.2; rvm use 1.9.2 --default
+
+# while ruby is being installed prepare nginx
+cd /usr/src
+wget http://nginx.org/download/nginx-1.0.0.tar.gz
+tar -xf nginx-1.0.0.tar.gz
+cd nginx-1.0.0
+
+# Use one place for installation
+rm -r /opt/ && ln -fs /usr/local /opt
+
+gem update --system ; gem update
+gem install bundler
+#install imagemagic
+apt-get -y install imagemagick
+
+# proceed with passenger
+apt-get -y install libcurl4-openssl-dev
+gem install passenger
+passenger-install-nginx-module
+# additional otions:
+# --prefix=/opt/nginx
+# --with-http_gzip_static_module --with-http_stub_status_module --with-http_sub_module
+
+
+# add nginx autostart script: http://wiki.nginx.org/Nginx-init-ubuntu
+# verify the correct paths
+cd /opt && \
+wget -O init-deb.sh http://library.linode.com/assets/602-init-deb.sh && \
+mv /opt/init-deb.sh /etc/init.d/nginx && \
+chmod +x /etc/init.d/nginx && \
+/usr/sbin/update-rc.d -f nginx defaults
+
+
+# add to /opt/nginx/conf/nginx.conf
+include /home/*/apps/*/current/nginx.conf;
+/etc/init.d/nginx restart
+
+
+
+# copy ssh keys (from local computer)
+cat ~/.ssh/id_rsa.pub | ssh root@my.server.com "mkdir ~/.ssh ; cat - >> ~/.ssh/authorized_keys"
+
+# change default ssh port from 22 to something to get rid of nasty attacks
+vim /etc/ssh/sshd_config # change the port number
+service ssh reload
+
+#install firewall?? No need for now as only openning 80,443 ports
+# apt-get install ufw
+</pre>
+</code>
+
+</p>
+
+<p>
+That should be enough for you to start using the server.
+In the <a href="http://blog.approache.com/2011/05/easy-rails-deployment-with-capistrano.html">future post I plan to describe my setup to make deploying new applications easier</a>.
+</p></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+I&#39;ve used this guide for 3 apps and it&#39;s worked great.  However the step &quot;use one place for installation&quot; wipes everything out for some reason so I skip that part but otherwise thanks.</div>
+</div>
+</div>

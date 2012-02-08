@@ -1,0 +1,23 @@
+---
+layout: post
+title: "CSS Cross Browser compatibility tips"
+date: 2008-06-20T13:57:00+10:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>I have been reading the very interesting <a href="http://anthonyshort.com.au/blog/comments/how-to-get-cross-browser-compatibility-everytime/">topic</a> and just decided to keep a note on that. Just for myself. Blog is sometimes useful&#160; as a notebook for myself. And it might help other people.</p>  <p>So what I want to note here: I often fight with different issues across Firefox and Internet Explorer (only these 2 browsers, but it's already enough for me).</p>  <p>I prefer to style pages in Firefox (just because it's more convenient using Firebug). Then I hope everything will work in IE (6,7) as well. But it has have did.   <br />So I have to tweak CSS for IE and watch not to break what's done for FF. It's just a real PITA.</p>  <p>There are <a href="http://www.google.com/search?q=cross+browser+css">tons</a> of guides how to write cross browser CSS.</p>  <p>But the <a href="http://anthonyshort.com.au/blog/comments/how-to-get-cross-browser-compatibility-everytime/">one</a> I particularly like has some short and useful tips. Let's quickly move through them:</p>  <ul>   <li><strong>Reset styles</strong> to make consistent look in all browsers. <a href="http://meyerweb.com/eric/thoughts/2008/01/15/resetting-again/">Sample</a>. Note: <em>Most JS libraries (YUI, ExtJS etc) provide reset CSS rules.</em></li>    <li><strong>Do not resize images</strong> via CSS/HTML because not all browsers do it well.</li>    <li><strong>Do not use light font on dark background</strong> because of issues in Safari that causes other issues fixing this one.</li>    <li><strong>Use only common fonts</strong> (Arial, Georgia, Verdana etc) because of different browsers and OS's render it differently. </li>    <li><strong>Size font</strong> in <strong>em</strong> through the page, but initialise in <strong>%</strong> for body. <em>I'm not exactly sure about this, but the reason is that &quot;The ability to resize text differs amongst browsers and OS&#8217;s&quot;.</em></li>    <li>All layout divs that are floated <strong>should include display:inline and overflow:hidden</strong>. This is due to IE doubles margins on the float side and IE 6 layout problems.</li>    <li><strong>Carefully clear floats</strong> using <font face="Courier New">overflow:auto</font> or <font face="Courier New">overflow:hidden</font>. Be aware of issues. See <a href="http://www.sitepoint.com/blogs/2005/02/26/simple-clearing-of-floats/">Samle</a>.</li>    <li>Use CSS selectors subset that all of your browser support. See <a href="http://www.evotech.net/blog/2008/05/browser-css-selector-support/">browser CSS selectors support</a>.</li>    <li><strong>Do not use PNG transparency</strong> if you need to support <strong>IE 6</strong>.</li> </ul>  <p>The general idea I prefer to stick is just using minimum subset of a features available in all supported browsers intersected with W3C standard.</p>  <p>So if one browser doesn't support particular descendant selector - never use it. If there's no such W3C description - never use it (<em>not always possible</em>).</p>  <p>But still the biggest problem is when browsers behave different ways with the same supported feature.   <br />I hope couple of these tips and links will help to solve you (and me) some of the cross-browser compatibility issues.</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Thanks Alexander. I'll remember the fix.</div>
+</div>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+btw, ie6 png transparency is easily fixed with applying specific htc behaviour for the img element, see http://www.twinhelix.com/css/iepngfix/<BR/><BR/>seems to work at our's</div>
+</div>
+</div>

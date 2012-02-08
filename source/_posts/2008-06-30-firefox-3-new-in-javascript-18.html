@@ -1,0 +1,69 @@
+---
+layout: post
+title: "Firefox 3: New in JavaScript 1.8"
+date: 2008-06-30T11:17:00+10:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>So what are the new stuff in the JavaSscrip 1.8 implemented in Firefox 3? Let's go through it quickly:</p>  <p>First of all JS 1.9 is enaable only by adding following script tag:</p>  <pre> &lt;script type=&quot;<strong>application/javascript;version=1.8</strong>&quot;&gt; ... your code ... &lt;/script&gt;</pre>
+
+<p>Very interesting thing is <a href="http://en.wikipedia.org/wiki/Lambda_calculus#Lambda_calculus_and_programming_languages">Lambda notation</a> which is a bit similar to C# Lambda Expressions.</p>
+
+<p>Code is worth to show:</p>
+
+<p><a href="http://developer.mozilla.org/en/docs/New_in_JavaScript_1.7">JavaScript 1.7</a> and older: </p>
+
+<pre> function(x) { return x * x; }</pre>
+
+<p>JavaScript 1.8: </p>
+
+<pre> function(x) x * x</pre>
+
+<p>It looks very nice, but I'm not sure how readable such code will be if this feature will be overused.</p>
+
+<p>&#160;</p>
+
+<p>Also Generator Expressions look interesting. But the code might not always be obvious to read.</p>
+
+<p>Compare the samples:</p>
+
+<p>In <a href="http://developer.mozilla.org/en/docs/New_in_JavaScript_1.7">JavaScript 1.7</a>, you might write something like the following in order to create a custom generator for an object: </p>
+
+<pre> function add3(obj) {
+   for ( let i in obj )
+     yield i + 3;
+ }
+ 
+ let it = add3(someObj);
+ try {
+   while (true) {
+     document.write(it.next() + &quot;&lt;br&gt;\n&quot;);
+   }
+ } catch (err if err instanceof StopIteration) {
+   document.write(&quot;End of record.&lt;br&gt;\n&quot;);
+ }</pre>
+
+<p>In JavaScript 1.8, you can circumvent having to create a custom generator function by using a generator expression instead: </p>
+
+<pre> let it = (i + 3 for (i in someObj));
+ try {
+   while (true) {
+     document.write(it.next() + &quot;&lt;br&gt;\n&quot;);
+   }
+ } catch (err if err instanceof StopIteration) {
+   document.write(&quot;End of record.&lt;br&gt;\n&quot;);
+ }</pre>
+
+<p>Behind the thing that I have never used let statement, I'm don't believe it is supported in IE (7) which I must target. However, </p>
+
+<p><code>(i + 3 for (i in someObj))</code> looks nice.</p>
+
+<p>&#160;</p>
+
+<p>Array object has two additional methods: reduce and reduceRight. Very useful things that are available (in a similar way) in most JS libraries (ExtJS has ForEach) that iterates through all the elements of an array. Nice to have a build-in support for it, but since it is not a part of ECMA-262 standard I'd never use it.</p>
+
+<p>&#160;</p>
+
+<p>So, as far as I can see the JavaScript 1.8 implementation is intended to allow developers write less code. But I'm not going to use it just now and just because of I'd rather write some additional &quot;old&quot;-manner code lines but have cross-browser support.</p>  </div>

@@ -1,0 +1,27 @@
+---
+layout: post
+title: "First look at Selenium brought to WatiN"
+date: 2008-02-11T23:04:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p></p>  <p>I have heard and read a lot of good and review about <a href="http://selenium-core.openqa.org/" target="_blank">Selenium</a> web testing tool. And it was the time to try it. My impression is very good of it. I liked to write tests as a table. This is quick and easy way. I enjoyed it. The framework and architecture seems to be very extensible and written JavaScript that is promised to support lots of browsers.</p>  <p>Just a sample of test written in HTML:</p>  <table border="1"><colgroup><col width="31%"><col width="38%"><col width="31%"></colgroup><tbody valign="top">     <tr>       <td colspan="3">This is random comment</td>     </tr>      <tr>       <td>open</td>        <td><a href="http://www.google.com/">http://www.google.com</a></td>        <td> </td>     </tr>      <tr>       <td>type</td>        <td>q</td>        <td>Selenium</td>     </tr>      <tr>       <td>clickAndWait</td>        <td>btnG</td>        <td>
+</td>     </tr>      <tr>       <td>verifyTextPresent</td>        <td>Selenium</td>        <td>
+</td>     </tr>   </tbody></table>  <p>I love this. The <a href="http://selenium-ide.openqa.org/" target="_blank">Selenium IDE</a> even more simplifies the task of writing tests with hints about available commands and parameters. This is really cool.</p>  <p>But... What are my requirements for now? Basically I just need to crawl the site to verify every thing is working fine. So even plain Request/Response would do the task for me. Keeping in mind that later I will definitely  need something more (<em>has somebody said the requirements should never change??</em>) I did not go the plain Request/Response way (like already closed project - <a href="http://nunitasp.sourceforge.net/" target="_blank">NUnitASP</a>).</p>  <p>I went <a href="http://watin.sourceforge.net/" target="_blank">WatiN</a> way :)    
+This project is comparably new and it come with IE 6, 7 support only. In the Feb 2008 it should support Firefox also.</p>  <p>The reasons why I have chosen <a href="http://watin.sourceforge.net/" target="_blank">WatiN</a>:</p>  <ol>   <li>I believe in its success.</li>    <li>Full user simulation.</li>    <li>No additional server maintenance (comparing to Selenium).</li>    <li>It is native .NET implementation (that is based on COM Interop :-))</li>    <li>Very nice syntax to write tests.</li><li>It has <a href="http://watintestrecord.sourceforge.net/">recorder</a> (honestly, not impressed of it).</li><li>Write tests in Excel using <a href="http://www.codeplex.com/wax">Wax</a>. (Haven't tried it yet).
+</li>    <li>Looking forward for Firefox support.</li> </ol>  <p>The reason (<em>ONE)</em> why I <em>did not</em> went Selenium way:</p>  <ol>   <li>It requires keeping all tests on the server. It is not good for me because:</li>    <ol>     <li>I don't like to fight with caching every time I change one line in HTML-test.</li>      <li>Keeping tests on the <em>production</em> server exposes security issues.</li>      <li>Keeping tests on the server requires <span style="font-size:78%;"><em>(small)</em></span> maintenance efforts.</li>   </ol> </ol>  <p>As far as I can see these 2 tools are very good ones, but choose one with accuracy... Or maybe use both.</p>  <p>Happy testing!</p></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Thanks for the suggestion.<BR/>I had seen InCisif.net before but didn't pay attention to it.<BR/><BR/>I have had a <I>quick</I> look.<BR/>The <A HREF="http://www.incisif.net/Animation/OutPut/RecordMode2.1/RecordMode2.1.html" REL="nofollow">record mode</A> looks very accurate.<BR/><BR/>But still, for now I feel WatiN is a bit more enjoyable for me. <BR/><BR/>InCisif.net is also free for <I>Personal</I> use only. So for now I don't see breaking reasons to go with InCisif.net.<BR/><BR/>As for the Firefox. This is the snippet from News on the WatiN home page:<BR/><B><BR/>Update: New releases scheduled for early februari. Yes, releases! We will release WatiN 1.3, but more interesting there will be a CTP version of WatiN 2.0 with FireFox support! So check back soon. <BR/></B><BR/>Hopefully it will be delivered.</div>
+</div>
+<div class='comment'>
+<div class='author'>ftorres</div>
+<div class='content'>
+Dmitriy, check out <A HREF="http://www.InCisif.net" REL="nofollow">InCisif.net</A><BR/>record mode and let me know what you think ?<BR/><BR/>Are you really sure WatiN is going to support FireFox ?<BR/><BR/>This is not on the roadmap ?</div>
+</div>
+</div>

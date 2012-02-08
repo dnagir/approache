@@ -1,0 +1,59 @@
+---
+layout: post
+title: "ASP.NET MVC RenderPartial with null Model"
+date: 2009-05-06T12:02:00+10:00
+categories:
+ - tricks
+ - Development
+ - asp.net mvc
+---
+
+<div class='post'>
+If you’ll try to pass null to the RenderPartial method it will actually pull the model from the page and will, most likely, give an error.<br />
+So instead of <br />
+<pre class="csharpcode">RenderPartial(“MyPartial”, item)</pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+<br />
+you better write<br />
+<pre class="csharpcode">RenderPartial(“MuPartial”, <span class="kwrd">new</span> ViewDataDictionary { Model = item })</pre>
+<br />
+Just a quick note. Thanks to this <a href="http://forums.asp.net/p/1318253/2616091.aspx#2616091" target="_blank">forum post</a>.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Thanks. Good suggestion.</div>
+</div>
+<div class='comment'>
+<div class='author'>Tahir Hassan</div>
+<div class='content'>
+Hi,<br /><br />since the ViewDataDictionary also contains the ModelState which will tell you if fields are invalid etc, it is better to contruct the ViewDataDictionary passing the current ViewData in; therefore your second argument would be as follows:<br /><br />new ViewDataDictionary(ViewData) { Model = item }</div>
+</div>
+</div>

@@ -1,0 +1,23 @@
+---
+layout: post
+title: "MVC Concerns - DataBinding and Security"
+date: 2008-03-06T12:16:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>One of my biggest concerns about MVC is automatic data binding that processes the HTTP request and populates values of objects. It applies for both <a href="http://www.asp.net/downloads/3.5-extensions/" target="_blank">ASP.NET MVC</a> and <a href="http://www.castleproject.org/monorail/index.html" target="_blank">MonoRail</a>.</p>  <h5>THE PROBLEM:</h5>  <p>HTTP request can be easily &quot;spoofed&quot; by simply adding appropriate values to it. It will lead to modifying not-allowed properties, associations and even whole model.</p> <hr /> <h5>Solutions 1 (Manual):</h5> <p>Don't use automatic DataBinding from HTTP requests and <strong>populate all the values manually</strong>.</p> <p>Pros</p> <ul>   <li>Full control over the values.</li> </ul> <p>Cons</p> <ul>   <li>Lots of additional code.</li> </ul>  <hr />  <h5>Solution 2 (Allow):</h5> <p>Explicitly define which properties are allowed to be data bound. It can be done in both MonoRail and ASP.NET MVC by specifying a string with list of object properties. Like so: <font face="Courie" size="2"><strong>Allow=&quot;FirstName,LastName&quot;</strong></font>. See more in <a href="http://www.castleproject.org/monorail/documentation/trunk/usersguide/smartcontrolleradv.html" target="_blank">MonoRail</a>.   <br /></p> <p>Pros</p> <ul>   <li>Easy to define.</li>   <li>No additional code.</li> </ul> <p>Cons</p> <ul>   <li>Hard to keep track of a real property and its name as a string.</li>   <li>Impossible to allow binding of different properties for different users (eg: <em>Admin</em> can also assign value to <em>Enabled</em> property of a user).</li> </ul>  <hr /> <h5>Solution 3 (DTO):</h5> <p>Wrap real business objects with poor <a href="http://en.wikipedia.org/wiki/Data_Transfer_Object" target="_blank"><strong>Data Transfer Objects</strong></a> and expose them to external world (outside of controllers).</p> <p>Pros</p> <ul>   <li>Safe to pass to external world.</li>   <li>Save to pass to view (in case views are developed by somebody else)</li>   <li>No additinal code because of automatic binding.</li>   <li>Easier to test.</li>   <li>Reusable for automatic binding for different user roles (using at least inheritance of DTOs).</li>   <li>Reusable for JSON, XML serialization.</li> </ul> <p>Cons</p> <ul>   <li>A <em>bit</em> more code.</li> </ul>  <hr /> <h4>SUMMARY</h4> <p>Automatic data-binding in ASP.NET MVC and MonoRail is insecure by default. Dot.    <br />Always use one of these 3 solutions. There, of course, are more, but this is what you can get out of the box.</p> <p>I think the decision should be made this way:</p> <ul>   <li>Solution 1 (Manual) - you are too concerned or really need full control over everything.</li>   <li>Solution 2 (Allow) - only one user's role can execute the page and you don't need JSON, XML serialization.</li>   <li>Solution 3 (DTO) - all other cases.</li> </ul>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+Ben, I <I>think</I> large number of MonoRail, RubyOnRails sites can be "hacked" by spoofing HTTP requests.<BR/>So this is really an important thing and some why little of people pay attention to it.</div>
+</div>
+<div class='comment'>
+<div class='author'>BenL</div>
+<div class='content'>
+I followed your comment on my blog to this post... Interesting point you raised regarding security. Another nice reason to favour screen DTOs!</div>
+</div>
+</div>

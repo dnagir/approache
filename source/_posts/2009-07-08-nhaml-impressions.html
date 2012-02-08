@@ -1,0 +1,99 @@
+---
+layout: post
+title: "NHAML – impressions"
+date: 2009-07-08T10:34:00+10:00
+categories:
+ - nhaml
+ - Development
+ - DevTools
+---
+
+<div class='post'>
+I have introduced the <a href="http://code.google.com/p/nhaml/" target="_blank">NHAML</a> into a new project. Just can’t silently ignore it. This is great thing. Really great. It does save time and helps to concentrate on the presentation of the view in ASP.NET MVC. I just love. Additionally it has great coverage of unit tests and code looks really good. So I believe in its quality.<br />
+<br />
+This is the quote:<br />
+<blockquote>
+<i>"Haml is a markup language that‘s used to cleanly and simply describe the XHTML of any web document, without the use of inline code. Haml functions as a replacement for inline page templating systems such as PHP, ERB, and ASP. However, Haml avoids the need for explicitly coding XHTML into the template, because it is actually an abstract description of the XHTML, with some code to generate dynamic content."</i><br />
+In other words, NHaml is an external DSL for XHTML. It’s primary qualities are it’s simplicity, terseness, performance and that it outputs nicely formatted XHTML. Additionally, the NHaml view engine provides support for Rails style layouts and partials and ships with an ASP.NET MVC view engine. </blockquote>
+<br />
+Why do you want to use NHAML:<br />
+<ul>
+<li>Want to write less code. </li>
+<li>Do not want to repeat the HTML closing tags. </li>
+<li>Want to generate valid XHTML easier. </li>
+<li>Tired of chaging type of the model in ASPX.</li>
+<li>Tired of writing      <br />
+<pre class="csharpcode"><span class="asp">&lt;%</span>= Server.HtmlEncode(Model.Name) <span class="asp">%&gt;</span></pre>
+<style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style><style type="text/css">
+.csharpcode, .csharpcode pre
+{
+ font-size: small;
+ color: black;
+ font-family: consolas, "Courier New", courier, monospace;
+ background-color: #ffffff;
+ /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+ background-color: #f4f4f4;
+ width: 100%;
+ margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+</style>
+
+  </li>
+<li>Want to keep it simple. </li>
+<li>Want mark-up to drive the rules and not code. </li>
+</ul>
+Why you don’t:<br />
+<ul>
+<li>Want to have intelly-sence in the view. </li>
+<li>Want to use Visual Studio MVC integrated features: 
+    <br />
+<ul>
+<li>Go to Controller (from view) </li>
+<li>Go to View (from controller action) </li>
+<li>Add view (from controller action) </li>
+</ul>
+</li>
+<li>Don’t want to bother with new syntax (even when it takes minutes to learn) </li>
+</ul>
+I thought about Spark view engine. It promotes that the presentation drives the rules but not code. But still NHAML suits me&nbsp; much better and it drives the presentation much better.<br />
+You’ll find enough on the Internet on the NHAML. Don’t forget to view the <a href="http://code.google.com/p/nhaml/wiki/NHamlLanguageReference" target="_blank">reference</a> as there are some changes to the syntax that might not be reflected in topics on the net.<br />
+Also don’t forget to say thanks to guys working on it by <a href="http://code.google.com/p/nhaml/" target="_blank">donating</a> (see the button at the bottom) them.<br />
+I plan to post couple of tips on it later.</div>

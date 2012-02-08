@@ -1,0 +1,114 @@
+---
+layout: post
+title: "Unix - do not reinvent the wheel"
+date: 2011-05-19T00:00:00+10:00
+categories:
+ - linux
+ - ruby-on-rails
+---
+
+<div class='post'>
+<p>
+One of the most interesting videos I watched from the <a href="http://video2010.scottishrubyconference.com/">Scottish RubyConf 2010</a> is <a href="http://video2010.scottishrubyconference.com/show_video/6/1">Unix: Rediscovering the wheel</a>. If you use Ruby/Rails and POSIX systems you gotta know those things.
+This is just a quick list of notes to keep it mind. So you will have to Google if something catches your attention.
+</p>
+
+<p>
+
+<code>
+<pre>
+
+Scheduling tasks with Cron
+==========================
+- define all tasks in cron
+- don't make Ruby do scheduling
+
+
+Background processing with ATD daemon
+======================================
+echo "convert image.jpg image.png" | batch
+
+
+Logging with syslog
+======================================
+- don't use rails log
+
+Resource limiting with rlimit
+======================================
+ulimit -v 102400
+ruby -e "' ' * 1024 * 1024 * 1024 *1"
+failed to allocate memory (NoMemoryError)
+
+CPU and Disk IO priorities
+======================================
+nice -n 19 rake xapian:update # run rake with priority 19
+ionice -c3 rake xapian:update # same for disk IO
+
+
+Atomic renames
+======================================
+- don't use locks
+- write to temp then rename
+
+Secure self-cleaning temporary files
+======================================
+- create temp fie
+- delete it while holding it open
+- write/read securely
+
+
+Page cache expiry with find
+======================================
+find public/cache -type f --mmin +10 -delete # del all files 10 mins old in a "transaction"
+
+Log rotation with logrotate
+======================================
+- Rails sucks at it, use time proven and tested UNIX
+
+
+Managing daemons with start-stop-daemon
+==========================================
+- don't reinvent the wheel starting/stoping daemons (mogrels etc)
+    start-stop-daemon -d $railsdir -b -o -p $pidfile --start --starts rake xapian:update
+- run cron tasks using start-stop-daemon to avoid race condition (it will exit if process already runs)
+
+
+Real time signals
+==========================================
+use it in ruby:
+trap("USR1") { reopen_xapian_db }
+
+
+Raliable messaging with... SMTP!
+==========================================
+Due to atomic and reliable delivery it can be use as a message queue.
+Can replace RabbitHQ etc
+
+
+dbus
+==========================================
+UNIX based Messaging system
+
+
+Self-organising systems with AVAHI
+==========================================
+Bonjour??
+
+
+Modularised config files
+==========================================
+/etc/cron.d/rails-myapp
+/etc/logrotate.d/rails-myapp
+
+
+Watchdog daemon
+==========================================
+
+
+
+
+
+</pre>
+</code>
+
+</p></div>

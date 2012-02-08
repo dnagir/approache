@@ -1,0 +1,36 @@
+---
+layout: post
+title: "8 Simple Rules For Developing More Secure Code"
+date: 2006-12-01T20:13:00+11:00
+categories:
+ - Development
+ - DevTools
+ - security
+---
+
+<div class='post'>
+Are you sure your code is bulletproof? Let's see...
+
+I've just read interesting MSDN Magazine <a href="http://msdn.microsoft.com/msdnmag/issues/06/11/SecureHabits/">article</a>. If you're a software developer (or a hacker in any meaning of this word) I would recommedn to read it. For software developer I can comment it shortly:
+
+<br />
+<ol>
+<li>Only you are responsible for writing secure code. Not tools, not technologies of future.</li>
+<li>Never Trust Input Data. Assume all input is invalid and accept only good data, but not vice versa.</li>
+<li>Model possible treats that can affect your code, test your code to be bulletproof.</li>
+<li><a href="http://www.securityfocus.com/">Learn </a>new possible attacks. Read books, subscribe to news.</li>
+<li>Test reliability (Fuzzing). Don't simply punt a crash as "just a crash." Every crach is a potential security issue.</li>
+<li>Do not write insecure code. IF you know a function should only accept "good" parameters - validate it. If encryption is required do not use MD5, DES (which are already broken). And so on...</li>
+<li>Use any tools to help find potential problems. But do not rely on them.</li>
+<li>Remember to review your old code becuase of it can become insecure.</li>
+</ol>
+Following these general rules will help to make your code more stable and secure.<br />
+Also make sure you read <a href="http://msdn.microsoft.com/msdnmag/issues/02/09/SecurityTips/">Top Ten Security Tips Every Developer Must Know</a>.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>DAS</div>
+<div class='content'>
+very intersing rules</div>
+</div>
+</div>

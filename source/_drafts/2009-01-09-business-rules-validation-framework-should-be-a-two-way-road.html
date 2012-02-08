@@ -1,0 +1,224 @@
+---
+layout: post
+title: "Business Rules Validation Framework should be a two way road"
+date: 2009-01-09T17:24:00+11:00
+---
+
+<div class='post'>
+<p>There are a lot of them <a href="http://www.google.com/search?q=.NET+Validation+Framework" target="_blank">around</a>. And they work very well until a <em>particular point</em>. I think a could divide all of them into groups based on how they do their work:</p>
+
+<ol>
+  <li>Attribute based (Castle Validators is the best example, other typical one is <a href="http://www.codeplex.com/ValidationFramework" target="_blank">ValidationFramework</a>) </li>
+
+  <li>Code based. </li>
+
+  <li>Configuration based. </li>
+</ol>
+
+<p>It's worth to mention that this type of validation is stateless which means the result of validation is a cut of the model state at particular point in time.</p>
+
+<p>&#160;</p>
+
+<p>Microsoft Validation Block support all 3 options so it seem to be pretty complete.</p>
+
+<p>BUT what really it is? It us just input validation. Not a business rules validation.</p>
+
+<p>&#160;</p>
+
+<h2>What we require from it</h2>
+
+<ul>
+  <li>Rules can be applied to random values 
+    <br /></li>
+
+  <li>API doesn't force objects to implement anything </li>
+
+  <li>API doesn't force the validation to be performed INSIDE objects </li>
+
+  <li>Each rule can be applied to a <i>value</i> which is one of: 
+
+    <br />
+
+    <ul>
+      <li>object of particular type </li>
+
+      <li>property value of an object 
+        <br /></li>
+
+      <li>standalone simple value 
+        <br /></li>
+    </ul>
+  </li>
+
+  <li>Should be able to expose the result to external without compromising security 
+    <br /></li>
+</ul>
+
+<br />
+
+<h2>Rule Definition</h2>
+Defines a single rule that can mapped to a particular <i>value</i>. 
+
+<br />
+
+<br />
+
+<ul>
+  <li>Value Type 
+    <br /></li>
+
+  <li>Validation action </li>
+</ul>
+
+<h2>Rule Mapping</h2>
+Defines a mapping between a <i>value</i> and a <i>Rule Definition</i>. 
+
+<br />
+
+<ul>
+  <li>Business code </li>
+
+  <li>Error message </li>
+
+  <li>Valid case message </li>
+</ul>
+
+<br />
+
+<h2>Validation Set</h2>
+Is a set of Rule Mappings. API can define many validation sets for a particular scenario (Managing Customer, Managing Product). 
+
+<br />
+
+<h2>Creating a validation set</h2>
+Having the rule definitions: 
+
+<br />
+
+<table><tbody>
+    <tr>
+      <td>&#160;</td>
+
+      <td>ValueType</td>
+
+      <td>Action/&gt;</td>
+    </tr>
+
+    <tr>
+      <td>r1</td>
+
+      <td>String</td>
+
+      <td>Value.Length &gt; 0</td>
+    </tr>
+
+    <tr>
+      <td>r2</td>
+
+      <td>DateTime</td>
+
+      <td>DateTime.Now.AddYears(1) &lt;= Value</td>
+    </tr>
+  </tbody></table>
+
+<br />One rule can be applied (mapped) many times to different <i>values.</i> It creates a Validation Set. 
+
+<br /><u><b>Poduct Set:</b></u> 
+
+<br />
+
+<table><tbody>
+    <tr>
+      <td>&#160;</td>
+
+      <td>Value to appy to</td>
+
+      <td>Code</td>
+
+      <td>ErrorMessage</td>
+
+      <td>ValidCaseMessage</td>
+
+      <td>Rule Definition Number</td>
+    </tr>
+
+    <tr>
+      <td>v1</td>
+
+      <td>Product.Name</td>
+
+      <td>Product.MandatoryName</td>
+
+      <td>Name is not provided</td>
+
+      <td>Name is mandatory</td>
+
+      <td>r1</td>
+    </tr>
+
+    <tr>
+      <td>v2</td>
+
+      <td>Product.DeliveryDate</td>
+
+      <td>DeliveryBeforeOneYear</td>
+
+      <td>Specify delivery to be within one year</td>
+
+      <td>One year delivery</td>
+
+      <td>r2</td>
+    </tr>
+
+    <tr>
+      <td>v3</td>
+
+      <td>Product.Description</td>
+
+      <td>Product.Description</td>
+
+      <td>Enter the description</td>
+
+      <td>Description is mandatory</td>
+
+      <td>r1</td>
+    </tr>
+  </tbody></table>
+
+<br />
+
+<h2>Outoing usage of the validation sets</h2>
+Outgoing means the validation set provides validation information to the outside to provide 
+
+<ul>
+  <li>&quot;valid case&quot; information in the system (UI, other tier etc) </li>
+
+  <li>formatting (if available). </li>
+</ul>
+
+<br />
+
+<h2>Incomming usage of the validation sets</h2>
+Incomming means the validation set provides information about the rules beeing violated to: 
+
+<br />
+
+<ul>
+  <li>perform validation information. </li>
+</ul>
+
+<p>&#160;</p>
+
+<h2>References</h2>
+
+<ul>
+  <li><a href="http://www.codeproject.com/KB/validation/ValidationFramework.aspx" target="_blank">Object Level Validation Framework</a> </li>
+
+  <li><a href="http://www.castleproject.org/" target="_blank">Castle Project</a> </li>
+
+  <li><a href="http://www.codeplex.com/ValidationFramework" target="_blank">.NET Validation Framework</a> </li>
+
+  <li><a href="http://msdn.microsoft.com/en-us/library/dd140112.aspx" target="_blank">Validation Application Block (Quick Starts)</a> </li>
+
+  <li><a href="http://ayende.com/Blog/archive/2007/04/02/Input-Validation-vs.Business-Rules-Validation.aspx" target="_blank">Input Validation vs Business Rules Validation</a> </li>
+</ul></div>

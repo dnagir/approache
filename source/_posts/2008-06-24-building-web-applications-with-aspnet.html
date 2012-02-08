@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Building Web Applications with ASP.NET MVC"
+date: 2008-06-24T11:26:00+10:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p>I have just read a nice article: <a href="http://msdn.microsoft.com/en-us/magazine/cc337884.aspx">Building Web Apps without WebForms</a>. As always, I like to use blog as a notebook to remember something for the future.</p>  <p>It mostly shows how to develop ASP.NET MVC application and has simple and useful samples.</p>  <p>I just want to quote couple of paragraphs from the topic.</p>  <blockquote>   <p>ASP.NET Web Forms made it <strong>very easy to get started</strong>, but, in other ways, trying to apply my design principles to Web apps <strong>was a struggle</strong>. Web Forms are relentlessly <strong>UI focused</strong>; the fundamental atom is the page. You <strong>start by designing your UI and dragging controls</strong>. It's very seductive to just start slapping your application logic into the page's event handlers (much like Visual Basic&#174; enabled for Windows&#174; apps).</p>    <p>On top of that, <strong>unit testing of pages is often difficult</strong>. You can't run a Page object through its lifecycle without spinning up all of ASP.NET. While it is possible to test Web apps by sending HTTP requests to a server or automating a browser, <strong>that kind of testing is fragile</strong> (change one control ID and the test breaks), hard to set up (you have to set up the <strong>server on every developer's machine</strong> exactly the same way), and slow to run.</p> </blockquote>  <p>Cannot agree more with all that. And read this:</p>  <blockquote>   <p>I had to figure out how to <strong>reduce the view state size</strong> to get my pages to load faster. Web Forms require that a<strong> physical file</strong> exist at every URL, something that dynamic sites (like a wiki, for example) make difficult. And successfully writing a custom WebControl is a remarkably complex process that requires a comprehensive understanding of both page lifecycle and the Visual Studio&#174; designer.</p> </blockquote>  <p>This ViewState... Have a look at <a href="http://dnagir.blogspot.com/2007/06/undestanding-aspnets-viewstate.html">this article</a> just to understand how the ViewState works. While many of us (WebForm devs) have already got it, but it's just ridiculous. On the other hand there's still a big disadvantage of using ASP.NET MVC instead of WebForms. <a href="http://dnagir.blogspot.com/2007/10/monorail-second-look.html">There're no</a> large UI controls set available for it.</p>  </div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>ftorres</div>
+<div class='content'>
+For functional web testing of asp.net web form app or MVC app in C# or VB.NET check out http://www.InCisif.net.<BR/><BR/>InCisif.net does support ASP.NET's ID and is integrated with Visual Studio.<BR/><BR/>http://www.incisif.net/blog/entries/2008-02-08%20Web_Testing_and_ASP.NET_ID.htm</div>
+</div>
+</div>

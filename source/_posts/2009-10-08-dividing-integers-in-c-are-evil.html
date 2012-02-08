@@ -1,0 +1,58 @@
+---
+layout: post
+title: "Dividing integers in C# are evil"
+date: 2009-10-08T10:56:00+11:00
+categories:
+ - Development
+ - .net
+ - frustration
+---
+
+<div class='post'>
+If you have ever worked with arithmetical operations in C# you probably know this. But it is the thing that can easily be slept from you and not even mentioned.<br />
+What do you think the code will print? True or False?<br />
+<div>
+<pre style="background-color: #f4f4f4; border-style: none; color: black; font-family: consolas,'Courier New',courier,monospace; font-size: 8pt; line-height: 12pt; margin: 0em; overflow: visible; padding: 0px; width: 100%;">Console.WriteLine(5/2 &gt; 2); // <span style="color: blue;">True</span> <span style="color: blue;">or</span> <span style="color: blue;">False</span>?</pre>
+</div>
+The result is, of course, <b>FALSE</b>. You should never forget the TYPE. Integer 5 divided by integer 2 returns <b>INTEGER</b>. And it is truncated integer, so the value will be 2 and not 2.5.<br />
+This fact that division operator returns INTEGER in my opinion is just wrong. There is no ANY guarantee at all that result will ever be integer. In other languages (including Pascal/Delphi) the division returns floating-point result. Which IS correct.<br />
+So in real live: <b>INT/INT=REAL</b>, in C# <b>INT/INT=INT</b>. Just wrong. No math behind such kind of division.<br />
+I have just faced this issue (just totally forgot about INT/INT=INT) trying to calculate an angle between 2 points on the Bitmap. It is simple:<br />
+<pre class="csharpcode">Point p1 = GetIt();
+Point p2 = GetIt();
+var radians = Math.Atan( (p1.X-p2.X) / (p2.Y-p1.Y) ); // Atan( INT/INT)!!</pre>
+As we can see the error is unavoidable. We will end up with wrong result.<br />
+So you should remember once and forever: <b>Be explicit about type when using division</b>.<br />
+And the code snippets should look like this to work correctly:<br />
+<pre class="csharpcode">Console.WriteLine(5.0/2.0 &gt; 2.0); <span class="rem">// This  correctly becomes "True"</span>
+
+<span class="rem">// casting of one division argument is enough, but better be explicit</span>
+Math.Atan( (<span class="kwrd">double</span>)(p1.X-p2.X) / (<span class="kwrd">double</span>)( p2.Y-p1.Y) ); 
+
+<span class="rem">// or if casting bothers you:</span>
+Math.Atan( (0.0 + p1.X-p2.X) / (0.0 + p2.Y-p1.Y) );</pre>
+<br />
+Additional note is that ReSharper greatly warns you saying “Possible loss of fraction”. I love it more and more every day.</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Alexander</div>
+<div class='content'>
+Well - to me the problem here is just in overloading the operators. <br /><br />Going backwards - Pascal (hehe) has 2 different ops for wholenum division and normal one - <br /><br />div <br />/<br /><br />And there were no problems at all about the division. To me - also - this decision - to use same symbol for wholenum and normal division - was just a mistake. I have myself ran into some problems with this.</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+It&#39;s wrong to bring Significant Figures into this. SigFigs says 5/2 = 2, but 5/2.0 is also 2. SigFigs is probably only taught in engineering, chemistry and physics schools - it&#39;s not usually a topic in computer science. At any rate, it&#39;s not the right reasoning here.<br /><br />Rather, I believe the real reason to simply in the hardware - Integer division is simpler and faster. Floating points are a different beast, and are slower for performance and use more energy due to the more complex circuitry involved. Difference in a single operation is microscopic at the desktop app level, but do a lot of these computations, or if you&#39;re writing for hardware, it makes a significant difference. <br /><br />This is part of the reason most  mobile device platforms had no support for floating point computations (if anything, they were fixed point computations emulated using integers).<br /><br />In C#, double and float are floating points, and decimal is a fixed point. For historical reasons, VB differentiates the two by providing the / operator as floating point division, and the \ operator as integer division.<br /><br />For better or for worse, this is how they&#39;ve implemented it. Ours not to reason why; ours but to do or... yeah :-/</div>
+</div>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+In math from school 5/2 is equal to 2.5. This is not possible when the result of the division operation is always INT. So give me the math that always defines the result of the division operation equal to Integer?<br /><br />In addition to that, tell me why most of other programming languages have Integer as a result of division operation?</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+I have no idea why you think IRL int/int=real, that&#39;s definitely not correct maths. Least significant number decides what the significance of the outcome will be. int = no decimals, so no decimals in the result. Back to school you go!</div>
+</div>
+</div>

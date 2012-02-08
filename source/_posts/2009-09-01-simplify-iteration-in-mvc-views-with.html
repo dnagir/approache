@@ -1,0 +1,78 @@
+---
+layout: post
+title: "Simplify Iteration in MVC Views with NHAML"
+date: 2009-09-01T21:04:00+10:00
+categories:
+ - nhaml
+ - Development
+ - asp.net mvc
+---
+
+<div class='post'>
+This post is inspired by the <a href="http://blog.codeville.net/2009/08/31/simplify-iteration-in-your-mvc-views/">one</a> from Steve Sanderson. He wants to improve the table generation on the WebForms engine in ASP.NET MVC. I definitely recommend to switch to <a href="http://code.google.com/p/nhaml/">NHAML</a> instead.<br />
+<br />
+This is how it would look: (there is no tbody - must be Steve's mistake, anyway I'll leave it as is)<br />
+<pre><code>
+
+%table
+  %thead
+    %th Rank
+    %th Name
+    %th Age
+  %tbody
+    - var people.Model.ToList();
+    - for(int index=0; index&lt;people.Count; index++) {
+      - var cssClass = "myitem-" + (index % 2 == 0 ? "odd" : "even");
+      - if (index == people.Count-1) cssClass += " myitem-last";
+        %tr {class=cssClass}
+          %td
+            = index + 1
+            .
+          %td
+            &amp;= people[index].Name
+          %td
+            &amp;= people[index].Age
+
+
+
+</code></pre>
+And this is much more readable for me, especially comparing to the <a href="http://blog.codeville.net/2009/08/31/simplify-iteration-in-your-mvc-views/">original</a>.<br />
+Also keep in mind there are no any extension methods used, just pure C# and NHAML.<br />
+Adding some extension methods I would probably make it look like this:
+<br />
+<pre><code>
+
+%table
+  %thead
+    %th Rank
+    %th Name
+    %th Age
+  %tbody
+    - for(int index=0; index&lt;Model.People.Count; index++) {
+        %tr{ class=#{Model.People.RowClassFor(index)} }
+          %td
+            = index + 1
+            .
+          %td
+            &amp;= people[index].Name
+          %td
+            &amp;= people[index].Age
+
+</code></pre>
+<br />
+<br />
+And we have only simplest possible extension method: RowClassFor. It can be reused in all the tables so you don't need to modify million of view in order to change css classes.<br />
+Looks much better? Don't you agree?</div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+The NHAML community is not very large but it is under continuous development and improvement. There are couple nice fellas working on it. Check the SVN history and you will see.<br /><br />Additionally there are large number of tests for NHAML. So I can sleep well using it.<br /><br />Also you can easily contribute to it and are very welcome to do so. Just ask at the user groups and I believe you will get invited.</div>
+</div>
+<div class='comment'>
+<div class='author'>Anonymous</div>
+<div class='content'>
+Hi - I accidentally discovered NHaml and like what I have seen so far. However, the community seems very quiet and not a lot seems to be happening. Am I missing something or is NHaml winding down. <br /><br />I would appreciate any information available.</div>
+</div>
+</div>

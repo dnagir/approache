@@ -1,0 +1,35 @@
+---
+layout: post
+title: "Define Web Site Breadcrumbs"
+date: 2008-03-06T15:40:00+11:00
+categories:
+ - Development
+---
+
+<div class='post'>
+<p></p>  <p>People often misuse and misunderstand what Web site Breadcrumbs really are. The term “<strong>breadcrumb</strong>” is used for several different concepts – causing confusion during design discussions.    
+It especially applies to those who use ASP.NET. I think it is related to the Site Map controls available since ASP.NET 2.0. They provide <em>location breadcrumbs</em>. See <a href="http://geekswithblogs.net/azamsharp/archive/2006/08/16/88197.aspx">here</a> for example.</p>  <p>Let's sort out all the breadcrumbs-related stuff and have a look at following sources:</p>  <ul>   <li><a href="http://en.wikipedia.org/wiki/Breadcrumb_%28navigation%29">Breadcrumb Navigation</a> on Wiki. </li>  <li>   <a href="http://instone.org/files/KEI-Breadcrumbs-IAS.pdf">Work on breadcrumbs</a> (PDF) at <a href="http://www.asis.org/Conferences/IASummit2002/index.html">3rd Annual Information Architecture Summit</a>. </li>  </ul>  <p>Basically there are 3 categories of breadcrumbs:</p>  <ol>   <li>Location Breadcrumbs </li>    <li>Path Breadcrumbs </li>    <li>Attribute Breadcrumbs </li> </ol>  <p>Lets have a look at each one deeper.</p>  <p> </p>  <h4>Location Breadcrumbs</h4>  <p>Location breadcrumbs are static and show where the page is located in the website hierarchy. It tells you <strong>where you are</strong>.    
+Use it for a web site with <a href="http://en.wikipedia.org/wiki/Tree_%28graph_theory%29">tree</a>-like hierarchical structure.    
+Typical example is a <a href="http://www.argocomputing.com.au/">company web site</a>.</p>  <p> </p>  <h4>Path Breadcrumbs</h4>  <p>Path breadcrumbs are dynamic and show the path that the user has taken to arrive at a page. It tells you <strong>how you got here</strong>.    
+Use it for a web site with <a href="http://en.wikipedia.org/wiki/Graph_theory">graph</a>-like structure or where it is hard to define the structure.</p>  <p> </p>  <h4>Attribute Breadcrumbs</h4>  <p>Attribute breadcrumbs give meta-information that categorizes the current page. It tells you <strong>what categories the page is in</strong>.    
+This type of breadcrumb can be represented as both Path or Location Breadcrumbs but is not intended represent the whole page, but its attributes instead.    
+I can think about a blog where categories can be organized hierarchically (<span style="font-family:Courier New;">CategoryRoot-&gt;[SubCategory1, SubCategory12]</span>). When you open a page that lists all the posts of a category, it might show Attribute Breadcrumbs with hierarchy of categories.</p>  <p> </p>  <h4>Why avoid breadcrumbs?</h4>  <p>Don't be fanatic using the breadcrumbs wherever possible. <strong>Remember that browsers perfectly handle <em>Path breadcrumbs</em></strong> and partially Location Breadcrumbs.    
+Path Breadcrumbs are probably the most confusing ones because of:</p>  <ol>   <li>The depth might be unlimited and it should be cut at some stage. </li>    <li>It can has circles or closures (Example: <span style="font-family:Courier New;"><strong>Products-&gt;Product 1-&gt;Details-&gt;Products-&gt;Product 1</strong></span>) which might make the Path Breadcrumb confusing (if not useless). </li> </ol>  <p>So please weight all the pros and cons before implementing any type of breadcrumbs on your site.</p></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Dmytrii Nagirniak</div>
+<div class='content'>
+efdee, cannot agree more.<BR/>But they probably might be useful on dynamic sites when users should submit pages. That's because of browsers record page submits in the history.</div>
+</div>
+<div class='comment'>
+<div class='author'>efdee</div>
+<div class='content'>
+I'd go as far as to say that Path Breadcrumbs are relatively useless and clutter your interface since this is exactly what is behind the Back and Forward buttons in your browser itself.</div>
+</div>
+<div class='comment'>
+<div class='author'>Keith Instone</div>
+<div class='content'>
+Good recap! Hope your posting helps .net developers do the right thing. Of course, "it depends" what the right thing is.</div>
+</div>
+</div>

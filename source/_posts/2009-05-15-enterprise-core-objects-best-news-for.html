@@ -1,0 +1,28 @@
+---
+layout: post
+title: "Enterprise Core Objects – the best news for years"
+date: 2009-05-15T09:22:00+10:00
+categories:
+ - sql
+ - Development
+ - eco
+---
+
+<div class='post'>
+I use <a href="http://en.wikipedia.org/wiki/CodeGear_ECO" target="_blank">Enterprise Core Objects</a> all the time and I really enjoy it. There’s no other framework in the world like this one (at least I’m not aware of such).<br />
+But it has some issues when it comes to SQL. The worst limitation during long time was that most of power of it is supported in-memory. YOu can run any kind of query, but in memory. If you want to execute it in the databases (SQL)… ECO just supports small subset of in-memory operations.<br />
+For example, we cannot count number of objects InPs (In-Persistence, on the Database Server) query (Person.allInstances-&gt;size), we cannot use casting (Oreder.allInstances.Transactions-&gt;select( t | t.oclIsTypeOf(Payment))) etc.<br />
+<br />
+But today my day starts really good because of the <a href="http://www.capableobjects.com/apps/InstantForum414/Topic3015-4-1.aspx#bm3323" target="_blank">response</a> on the forum.<br />
+I hope the In-Ps queries will be as powerful as InMemory ones. Time will show…<br />
+If it will be implemented ECO querying abilities will be much closer to ones in NHibernate. And I hope it will be more powerful some day (better soon!).<br />
+<br />
+I like what Jonas said: <br />
+<blockquote>
+<i>I have initiated work on this.</i></blockquote>
+<br />
+And:<br />
+<blockquote>
+<i>I can't promise anything for custom OclPs-operations yet.</i></blockquote>
+<br />
+I assume the 2nd statement puts ECO far away from NHibernate in querying abilities. Unfortunatelly… Not everything is such bright, but this is still a step forward.</div>
