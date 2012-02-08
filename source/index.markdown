@@ -8,10 +8,13 @@ sharing: false
 footer: true
 ---
 
+{% img right /about/me.jpg Dmytrii Nagirniak photo%}
+
 > Work like you don't need the money  
 > Dance like no one is watching  
 > Sing like no one is listening  
 > Love like you've never been hurt  
+
 
 It's all about passion
 ==================================================
@@ -31,6 +34,4 @@ I have always been trying to create a perfect solution for all the problems.
 Unfortunately there is no such so far.
 Nevertheless, I believe it is possible to create excellent and amazing solutions.
 And this is what I'm after.
-
-
 
