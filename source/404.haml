@@ -1,0 +1,37 @@
+---
+layout: default
+sidebar: false
+title: "Uups, somebody stole this page form the Internet"
+comments: false
+sharing: false
+---
+
+%article(role='article')
+  %header
+    %h1 Uups, somebody stole this page form the Internet
+
+  %blockquote
+    %p So what now?
+
+  %p
+    %ul
+      %li
+        Try to
+        %a#lost-in-time-and-want-to-search{:href => ''}search what you're after
+      %li
+        or just head over to
+        %a{:href=>'/'}the home page
+        ,I guess.
+
+%script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'}
+:javascript
+  $(function(){
+    $("#lost-in-time-and-want-to-search").attr('href',
+      $('nav form').attr('action') + "?" +
+        "q=" + encodeURI(
+          location.pathname.replace(/\W+/i, ' ')
+          + ' '
+          + $("nav form input[name=q]:hidden:first").val()
+        )
+      );
+  });
