@@ -22,6 +22,13 @@ sharing: false
         or just head over to
         %a{:href=>'/'}the home page
         ,I guess.
+  %p
+    Also
+    %strong
+      please
+      %a#lost-in-time-and-report{:href => "mailto:d@ApproachE.com?subject=Missing page&body=It looks like this page is missing:  "}let me know
+    about this missing page and I might be able to find it from a hidden
+    corner of the Internet.
 
 %script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'}
 :javascript
@@ -33,5 +40,7 @@ sharing: false
           + ' '
           + $("nav form input[name=q]:hidden:first").val()
         )
-      );
+    );
+    var x = $("#lost-in-time-and-report");
+    x.attr('href', x.attr('href') + location.href);
   });
