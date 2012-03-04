@@ -21,7 +21,7 @@ But not simpler
 It's all about passion
 ==================================================
 
-I believe the software development process can be awesome, the same way as its result - the great art - the product.
+I believe the software development *process* can be awesome, same as its *result* - the great art - the product.
 
 Software development is not only a boring process and mechanical work,
 it is **the art** of creating **incredible solutions** and producing **great ideas**.
