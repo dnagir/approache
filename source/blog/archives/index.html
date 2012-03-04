@@ -4,6 +4,8 @@ title: Blog Archive
 footer: false
 ---
 
+<h3><a href="{{ root_url }}/blog/">view recent posts...</a></h3>
+
 <div id="blog-archives">
 {% for post in site.posts reverse %}
 {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
