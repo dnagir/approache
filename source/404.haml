@@ -30,15 +30,14 @@ sharing: false
     about this missing page and I might be able to find it from a hidden
     corner of the Internet.
 
-%script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'}
 :javascript
-  $(function(){
+  $.domReady(function(){
     $("#lost-in-time-and-want-to-search").attr('href',
       $('nav form').attr('action') + "?" +
         "q=" + encodeURI(
           location.pathname.replace(/\W+/i, ' ')
           + ' '
-          + $("nav form input[name=q]:hidden:first").val()
+          + $("nav form input[name=q][type=hidden]").first().val()
         )
     );
     var x = $("#lost-in-time-and-report");
