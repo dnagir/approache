@@ -11,7 +11,7 @@ footer: true
 {% img right /about/me.jpg Dmytrii Nagirniak photo%}
 
 
-{% blockquote Albert Einstein, The known genuis %}
+{% blockquote %}
 Everything should be made
 As simple as possible...
 But not simpler

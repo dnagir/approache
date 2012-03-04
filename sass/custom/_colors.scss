@@ -2,14 +2,54 @@
 // To give it a try, uncomment some of the lines below rebuild your blog, and see how it works.
 // If you need a handy color picker try http://hslpicker.com
 
+// Main Link Colors
+$link-color: #62B1D0;
+$link-color-hover: darken($link-color, 15);
+$link-color-visited: transparentize($link-color, 0.1);
+$link-color-active: $link-color;
 
-$header-bg: #024C68;// #024C68;
 
-$nav-bg: lighten($header-bg, 75);
-$nav-bg-back: linear-gradient($header-bg, $nav-bg, $nav-bg, $nav-bg);
+// Main Section Colors
+$main-bg: #024C68;
+$page-bg: #101010;
+//$article-border: #eeeeee;
 
-$sidebar-bg: lighten($header-bg, 75);
-$footer-bg: $header-bg;
+$header-bg: $page-bg;
+//$header-border: lighten($header-bg, 15) !default;
+$title-color: rgb(93, 207, 195);
+$subtitle-color: $title-color;
+
+$text-color: #BBB;
+$text-color-light: white;
+//$type-border: #ddd !default;
+
+
+/* Navigation */
+$nav-bg: $page-bg;
+$nav-bg-front: $title-color;
+$nav-bg-back: $page-bg;
+$nav-color: $title-color;
+$nav-color-hover: lighten($nav-color, 25);
+
+
+
+/* Sidebar colors */
+$sidebar-bg: $main-bg;
+
+
+
+
+$footer-color: $title-color;
+$footer-bg: $main-bg;
+
+
+//$header-bg: #024C68;// #024C68;
+//
+//$nav-bg: lighten($header-bg, 75);
+//$nav-bg-back: linear-gradient($header-bg, $nav-bg, $nav-bg, $nav-bg);
+//
+//$sidebar-bg: lighten($header-bg, 75);
+//$footer-bg: $header-bg;
 
 
 //$header-bg: #263347;
