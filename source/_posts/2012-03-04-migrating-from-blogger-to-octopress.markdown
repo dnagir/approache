@@ -38,7 +38,7 @@ Why I didn't want to switch:
 I have been on blogger since 2006 and have never ever needed to do anything to the blog in terms of mainteinance.
 
 Switching to a self-hosted blog/site will require a bit of involvement in this regard.
-But this is something I am willing to take. It's time to take my ass out of the comfy coach of Blogger.
+But this is something I am willing to take. It's time to take my ass out of the comfy couch of Blogger.
 
 
 So how to actually migrate?
