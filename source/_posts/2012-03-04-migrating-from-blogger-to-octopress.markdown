@@ -32,10 +32,10 @@ Reasons for switching:
 Why I didn't want to switch:
 ----------------------------
 
-- Losing **PageRank**, which shuldn't really be an issue (see below).
-- **Uncerteinities**. So now I have to maintain it myself? Take care of updates? Ohh, yeah!
+- Losing **PageRank**, which shouldn't really be an issue (see below).
+- **Uncerteinities**. So now I have to maintain it myself? Take care of updates? Hell, yeah!
 - **Self-hosted**. Nothing to say here.
-- I have never ever needed to do anything with the blog in terms of mainteinance while being on Blogger. I really just worked.
+- I have never ever needed to do anything with the blog in terms of maintenance while being on Blogger. I really just worked.
 
 Switching to a self-hosted blog/site will require a bit of involvement from me.
 But this is something I am willing to take. It's time to take my ass out of the comfy couch of Blogger.
@@ -76,7 +76,7 @@ I am using FeedBurner and I had to set `subscribe_rss: http://feeds.feedburner.c
 Now that you've got your posts, you want to set-up the redirection from your blog to your new site.
 
 I prepared [simple Sinatra application](https://github.com/dnagir/approache-redirects/blob/master/app.rb) for that.
-You definitely want to fork and tweek it to your needs. Note that I'm not using the `blog/YYYY/MM/DD/title` format.
+You definitely want to fork and tweak it to your needs. Note that I'm not using the `blog/YYYY/MM/DD/title` format.
 I just use the `blog/title` format.
 
 Now go ahead and deploy this app. I've decided to use Heroku for that which is the simplest and easiest way to go.
@@ -84,7 +84,7 @@ Now go ahead and deploy this app. I've decided to use Heroku for that which is t
 But **make sure you deploy to the domain of your blog**. For example, my Blogger blog was hosted on the `blog.approache.com` and I deployed it to this domain.
 
 It of course will not take any affect until you change your DNS settings.
-But this will enable permanent redirects immediatly when you'll do that (thus preserving all your old links).
+But this will enable permanent redirects immediately when you'll do that (thus preserving all your old links).
 
 
 Deployment
@@ -97,7 +97,7 @@ By now you should have:
 
 It's time to go ahead and actually [deploy](http://octopress.org/docs/deploying) your Octopress site.
 
-I wanted to merge `blog.approache.com` into the `aproache.com` so I deployed the new site to `approache.com`
+I wanted to merge `blog.approache.com` into the `approache.com` so I deployed the new site to `approache.com`
 (hosted on *Github Pages*).
 
 Now make sure everything is working properly and you have dome everything right.
