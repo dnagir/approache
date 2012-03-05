@@ -51,7 +51,7 @@ I would split it into 2 larger steps:
 
 Preparation
 --------------------------
-Here you need to setup the Octopress itself, configure it and import your existing posts from Blogger.
+At this stage you need to setup the Octopress itself, configure it and import your existing posts from Blogger.
 
 I won't go into details how to customise and set it up. You know where to get that information from.
 
@@ -100,7 +100,7 @@ By now you should have:
 - The Octopress site ready to go (with all the posts migrated).
 - Blogger redirection deployed.
 
-Now go ahead and actually deploy your Octopress site.
+Now go ahead and actually [deploy](http://octopress.org/docs/deploying) your Octopress site.
 I wanted to merge `blog.approache.com` into the `aproache.com` so I deployed the new site to `approache.com`
 that's hosted by *Github Pages*.
 
