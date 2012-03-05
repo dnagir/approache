@@ -3,7 +3,11 @@ layout: post
 title: "Migrating from Blogger to Octopress"
 date: 2012-03-04 20:09
 comments: true
-categories: DevTools, Ruby, Web
+categories:
+  - DevTools
+  - Ruby
+  - Web
+  - blogging
 ---
 
 
