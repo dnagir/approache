@@ -61,7 +61,7 @@ This part is relatively simple.
 What you need to do is
 
 1. Export your Blogger posts.
-2. Grab [this script](xxxx) and put it under `source` directory.
+2. Grab [this script](https://gist.github.com/1765496) and put it under `source` directory.
 3. Run the script as below.
 
 ```bash
@@ -113,7 +113,7 @@ Repeat and rinse until happy.
 When you are happy with what you have on the Octopress, the very last thing to do is to **disable the Blogger**.
 
 You should do it simply by changing your DNS record to point to your Octopress server (often it's an `A-record`).
-In my case I hade to change the DNS record from `CNAME - xxxx` to `A - xxxx`
+In my case I hade to change the DNS record from `CNAME - ghs.google.com` to `A - 207.97.227.245`
 
 Since you've already deployed your redirection app to that domain, all the user will be automatically redirected to your new Octopress site.
 All the PageRank should be preserved since the redirection is permanent.
