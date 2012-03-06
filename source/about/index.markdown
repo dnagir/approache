@@ -3,7 +3,7 @@ layout: page
 title: "About Dmytrii Nagirniak"
 #date: 2012-02-08 18:06
 sidebar: true
-comments: true
+comments: false
 sharing: true
 footer: true
 ---
@@ -11,7 +11,6 @@ footer: true
 I am a passionate Software Engineer with more than 9 years of professional software development experience striving to understand and help the business.
 Loving the *Test Driven Development* and believe it will become the de-facto standard soon-ish.
 
-{% img right /about/nina.jpg My lovely wife%}
 Even more than all the cool things, I love my wife, Nina, who infinitely supports me in every possible situation and takes care of *The Home*.
 She is energetic and loving life person. She is the one without whom I cannot imagine my life.
 
@@ -25,12 +24,12 @@ Technologies
 - HTML, CSS, JavaScript, AJAX, jQuery;
 - SASS, CoffeeScript.
 - XML, XSLT, XPATH;
-- C# 1.0-4.0, WINFORMS, ASP.NET MVC, ADO.NET, MS Enterprise Library, Enterprise Core Objects;
+- C# 1.0-4.0, WinForms, ASP.NET MVC, ADO.NET, MS Enterprise Library, Enterprise Core Objects;
 - NHibernate, log4net, LINQ, Mocks, NHaml;
 - NUnit, MsTest, WatiR, Selenium;
 - MS SQL Server 2000-2008;
 - Visual Studio 6-2010, Borland Developer Studio, Aptana IDE and the best IDEs: gedit and notepad++;
-- SVN, Git, QSC Team Coherence, MS Visual Source Safe/TFS, Borland StarTeam;
+- Svn, Git, QSC Team Coherence, MS Visual Source Safe/TFS, Borland StarTeam;
 - Apache, IIS, nginx;
 - Delphi, JEDI, Bold for Delphi; Delphi.NET
 - C++, MFC, ATL, WTL, STL, COM;
