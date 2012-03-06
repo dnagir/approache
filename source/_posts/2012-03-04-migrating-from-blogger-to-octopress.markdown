@@ -47,7 +47,7 @@ But this is something I am willing to take. It's time to take my ass out of the 
 
 So how to actually migrate?
 --------------------------
-I would split it into 2 larger steps:
+I would split it into the following larger steps:
 
 1. Preparation.
 2. Deployment.
