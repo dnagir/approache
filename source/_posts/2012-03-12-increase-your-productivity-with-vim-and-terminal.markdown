@@ -23,7 +23,7 @@ and [knockout-rails](http://approache.com/blog/knockoutjs-validations-video/).
 The world would an awesome place if more people (yes, including **you**) would start sharing the way they work.
 Well done Steve!
 
-But today I want to focus on just a few of things that should dramatically improve the productivity.
+But today I want to focus on just a few things that should dramatically improve the productivity.
 
 <!-- more -->
 
@@ -39,7 +39,7 @@ It is a brilliant piece of work!
 The power of vim is huge. Very small number of people actually do know how to use most of it.
 I'm certainly not one of them.
 
-But let me suggest some of the things that keep myself more productive:
+But let me suggest some of the things that keep myself more productive.
 
 Remap your CapsLock key to Control
 ------------------------------------
