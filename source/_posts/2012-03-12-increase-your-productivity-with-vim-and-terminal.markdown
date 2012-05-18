@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Increase your productivity in Vim and Terminal"
+title: Increase your productivity in Vim and Terminal
 date: 2012-03-12 06:30
 comments: true
 categories:
-  - Productivity
-  - DevTools
-  - Vim
-  - Linux
+- productivity
+- devtools
+- vim
+- linux
 ---
 
 This post will give you *minimal* suggestions that

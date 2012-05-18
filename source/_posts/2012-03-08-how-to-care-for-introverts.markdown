@@ -1,11 +1,11 @@
 ---
 layout: post
-title: "How to care for Introverts"
+title: How to care for Introverts
 date: 2012-03-08 08:25
 comments: true
 categories:
-  - psychology
-  - people
+- psychology
+- people
 ---
 
 I've just found an [interesting poster](http://afterwordss.tumblr.com/post/5274763919) that describes how to deal with introverts.
