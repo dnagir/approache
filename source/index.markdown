@@ -26,4 +26,6 @@ I believe the software development *process* can be awesome, same as its *result
 Software development is not only a boring process and mechanical work,
 it is **the art** of creating **incredible solutions** and producing **great ideas**.
 
-And that's what I'm after.
+And that's what I'm after...
+
+Read more about [Ruby](/blog/categories/ruby/), [JavaScript](/blog/categories/javascript/) and other stuff on my [blog](/blog/archives/).
