@@ -1,7 +1,7 @@
 ---
 layout: page
 sidebar: false
-title: "Passion for excellece in software development"
+title: "Passion for excellence in software development"
 #date: 2012-02-08 16:52
 comments: false
 sharing: false
