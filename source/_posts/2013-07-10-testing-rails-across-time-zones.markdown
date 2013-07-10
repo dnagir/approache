@@ -14,6 +14,8 @@ Why?
 --------------
 
 Because it is easy to get the dates/times wrong without even realising it.
+Even if you don't need to support multiple time zones, you can catch a lot of
+the edge cases.
 
 
 How?
@@ -27,7 +29,7 @@ How?
 Usage: Randomise time zone when running specs
 ----------------
 
-The RSpec support file will (part of this Gist) sets the Rails' `Time.zone` to a random time zone.
+The RSpec support file (see below) will set the Rails' `Time.zone` to a random time zone.
 So if something is wrong then your CI should eventually fail.
 
 When it will, you should look for the message at the very beginning:
@@ -50,13 +52,16 @@ This works without changing any of the existing specs and relies on
 the fact that your CI is running specs often enough.
 
 
-Run the specific specs across the different time zones
+Usage: Run the specific specs across the different time zones
 ----------------
 
 You may have some specs that you want to specifically test across all the time zones.
+That doesn't mean you want to support all time zone, it just means that the transitions
+between the dates are very important.
+Getting it run for all timezones will give good confidence about the correctness of the functionality, even for one time zone.
 
-This can be used, for example, with tests on reports that are sensitive to time zone.
-(All financial/sales reports probably).
+This can be used, for example, with tests on reports that are quite sensitive
+(all financial/sales reports probably).
 
 
 So how do you do it?
@@ -128,5 +133,8 @@ Tips/Gotchas
 - Move any `let!` (with bang) and `before` blocks under the `across_time_zones` to ensure the correct time zone is used at all times.
 
 
+
 You can grab the RSpec [support file](https://gist.github.com/dnagir/5962765) to leaverage it.
+Feedback on this is welcome.
+
 {% gist 5962765 %}
