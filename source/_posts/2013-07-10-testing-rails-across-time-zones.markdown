@@ -13,23 +13,25 @@ categories:
 Why?
 --------------
 
-Because it is easy to get the dates/times wrong without realising it.
+Because it is easy to get the dates/times wrong without even realising it.
 
 
 How?
 ---------------
 
-1. Randomise time zone when rinning specs
+1. Randomise time zone when running specs
 2. Run the specific specs across the different time zones
 
+<!-- more -->
 
-Usage: Randomise time zone when rinning specs
+Usage: Randomise time zone when running specs
 ----------------
 
 The RSpec support file will (part of this Gist) sets the Rails' `Time.zone` to a random time zone.
 So if something is wrong then your CI should eventually fail.
 
 When it will, you should look for the message at the very beginning:
+
 
 ```
 Current rand time zone: (GMT+06:30) Rangoon. Repro: Time.zone = ActiveSupport::TimeZone["Rangoon"]
@@ -42,7 +44,7 @@ Then go to your failing spec and in the context of it add the following
   before { Time.zone = ActiveSupport::TimeZone["Rangoon"] }
 ```
 
-Now you can re-run the spec and it should repetably and predictably fail (much like RSpec's random order with a given seed).
+Now you can re-run the spec and it should repeatably and predictably fail (much like RSpec's random order with a given seed).
 
 This works without changing any of the existing specs and relies on
 the fact that your CI is running specs often enough.
@@ -54,7 +56,7 @@ Run the specific specs across the different time zones
 You may have some specs that you want to specifically test across all the time zones.
 
 This can be used, for example, with tests on reports that are sensitive to time zone.
-(All fincancial/sales reports probably).
+(All financial/sales reports probably).
 
 
 So how do you do it?
@@ -126,5 +128,5 @@ Tips/Gotchas
 - Move any `let!` (with bang) and `before` blocks under the `across_time_zones` to ensure the correct time zone is used at all times.
 
 
-Grab the RSpec support file from
+You can grab the RSpec [support file](https://gist.github.com/dnagir/5962765) to leaverage it.
 {% gist 5962765 %}
