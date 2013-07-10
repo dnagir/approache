@@ -1,6 +1,13 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
 
+// TODO: Kill this off when fixed
+#content {
+  // content has overflow: visible which collapses the content to 0
+  // thus we need some height set
+  min-height: 25000px;
+}
+
 body > header {
   display: none;
 }
